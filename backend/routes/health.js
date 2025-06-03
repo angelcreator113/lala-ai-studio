@@ -1,8 +1,13 @@
-const express = require('express');
+// backend/routes/health.js
+
+import express from 'express';
+
 const router = express.Router();
 
-router.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+router.get('/', (req, res) => {
+  res.json({
+    message: '✅ Backend is healthy! 🚀✨'
+  });
 });
 
-module.exports = router;
+export default router;
