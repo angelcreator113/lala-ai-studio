@@ -1,2 +1,11 @@
-node_modules
-node_modules
+# Node
+node_modules/
+
+# Vite
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.vite-cache/
+
+# Environment
+.env
