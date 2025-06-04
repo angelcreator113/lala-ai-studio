@@ -1,64 +1,36 @@
-import { useEffect, useState } from 'react';
+// src/App.jsx
+import React, { useState } from 'react';
+import { sendEcho } from './api';
+import './App.css'; // your styles
 
 function App() {
-  const [apiMessage, setApiMessage] = useState('');
-  const [echoInput, setEchoInput] = useState('');
-  const [echoResponse, setEchoResponse] = useState('');
+    const [input, setInput] = useState('');
+    const [response, setResponse] = useState(null);
 
-  // Health check
-  useEffect(() => {
-    fetch('http://localhost:3000/health')
-      .then((res) => res.json())
-      .then((data) => setApiMessage(data.message))
-      .catch(() => setApiMessage('🔴 Error connecting to backend'));
-  }, []);
+    const handleSend = async () => {
+        const data = await sendEcho(input);
+        setResponse(data);
+    };
 
-  // Handle Echo API call
-  const sendEcho = async () => {
-    try {
-      const res = await fetch('http://localhost:3000/api/echo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: echoInput }),
-      });
-      const data = await res.json();
-      setEchoResponse(data.reply);
-    } catch (err) {
-      setEchoResponse('🔴 Error sending message');
-    }
-  };
+    return (
+        <div className="app-container">
+            <h1>Frontend ↔️ Backend Connector 🚀</h1>
+            <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Type a message"
+            />
+            <button onClick={handleSend}>Send to Backend</button>
 
-  return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Lala AI Studio Frontend 🎥🚀</h1>
-      <p style={{ fontSize: '1.2rem', color: 'green' }}>
-        ✅ API Status: {apiMessage}
-      </p>
-
-      <hr />
-
-      <h2>🚀 AI Echo API Demo:</h2>
-      <input
-        type="text"
-        value={echoInput}
-        onChange={(e) => setEchoInput(e.target.value)}
-        placeholder="Type a message..."
-        style={{ padding: '0.5rem', width: '300px' }}
-      />
-      <button
-        onClick={sendEcho}
-        style={{ marginLeft: '1rem', padding: '0.5rem 1rem' }}
-      >
-        Send
-      </button>
-
-      {echoResponse && (
-        <p style={{ marginTop: '1rem', fontSize: '1.1rem' }}>
-          Response: {echoResponse}
-        </p>
-      )}
-    </div>
-  );
+            {response && (
+                <div style={{ marginTop: '20px' }}>
+                    <h3>Backend Response:</h3>
+                    <pre>{JSON.stringify(response, null, 2)}</pre>
+                </div>
+            )}
+        </div>
+    );
 }
 
 export default App;
