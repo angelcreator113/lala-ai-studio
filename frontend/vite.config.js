@@ -1,7 +1,12 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+// vite.config.js
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
-})
+export default {
+  server: {
+    host: true,         // expose to github.dev
+    port: 5173,         // use 5173 (default GitHub Codespaces Vite port)
+    strictPort: true,   // if 5173 in use, fail — avoids browser mismatch
+    hmr: {
+      clientPort: 443   // hot reload over HTTPS
+    }
+  }
+};
