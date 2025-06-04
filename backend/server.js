@@ -1,24 +1,38 @@
+// Import required modules
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import healthRouter from './routes/health.js';
 
+// Initialize dotenv to load environment variables
 dotenv.config();
 
+// Create Express app
 const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json()); // for parsing application/json
+
+// Load PORT from .env or fallback to 3000
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
-
 // Routes
-app.use('/api/health', healthRouter);
 
-// Root
-app.get('/', (req, res) => {
-  res.send('Lala AI Studio Backend is running 🚀✨');
+// Health check route
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', message: 'Backend is alive 🚀' });
 });
 
+// Simple echo connector route
+app.post('/echo', (req, res) => {
+    const { message } = req.body;
+    res.json({
+        echoed: message,
+        time: new Date().toISOString()
+    });
+});
+
+// Start server
 app.listen(PORT, () => {
-  console.log(`✅ Server is running on port ${PORT}`);
+    console.log(`✅ Server is running on port ${PORT}`);
 });
