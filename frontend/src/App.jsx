@@ -1,30 +1,22 @@
 import React, { useState } from 'react';
+import VideoPlayer from './components/VideoPlayer';
 import TimelineEditor from './components/TimelineEditor';
-import { uploadCaptions } from './api';
 
-function App() {
-  const [uploadResult, setUploadResult] = useState(null);
+const App = () => {
+  const [videoUrl, setVideoUrl] = useState('https://www.w3schools.com/html/mov_bbb.mp4');
 
-  const handleUpload = async (captions) => {
-    const result = await uploadCaptions(captions);
-    setUploadResult(result);
+  const handleUploadCaptions = (captions) => {
+    console.log('📤 Uploading captions:', captions);
+    // You can add backend POST here in future!
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>🎬 Lala AI Studio</h1>
-
-      {/* Timeline Editor */}
-      <TimelineEditor onUpload={handleUpload} />
-
-      {/* Upload result */}
-      {uploadResult && (
-        <div style={{ marginTop: '1rem', color: 'green' }}>
-          ✅ Upload Result: {uploadResult.message} (Count: {uploadResult.count})
-        </div>
-      )}
+    <div className="app-container">
+      <h1>🎬 Lala AI Studio — Video + Captions 🚀</h1>
+      <VideoPlayer videoUrl={videoUrl} />
+      <TimelineEditor onUpload={handleUploadCaptions} />
     </div>
   );
-}
+};
 
 export default App;
