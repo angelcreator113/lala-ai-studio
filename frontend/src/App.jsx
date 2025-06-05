@@ -1,76 +1,55 @@
-import React, { useState, useRef, useEffect } from 'react';
+// frontend/src/App.jsx
+
+import React, { useState, useRef } from 'react';
 import TimelineEditor from './components/TimelineEditor';
+import './index.css';
 
-function App() {
-  const [videoUrl, setVideoUrl] = useState('');
-  const [captions, setCaptions] = useState([]);
-  const [currentCaption, setCurrentCaption] = useState('');
+const App = () => {
   const videoRef = useRef(null);
-
-  const handleVideoChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setVideoUrl(url);
-      setCaptions([]); // reset captions if new video
-    }
-  };
-
-  const handleUploadCaptions = (uploadedCaptions) => {
-    setCaptions(uploadedCaptions);
-  };
-
-  const handleTimeUpdate = () => {
-    const currentTime = videoRef.current?.currentTime || 0;
-    const activeCaption = captions.find(
-      (cap) => currentTime >= cap.start && currentTime <= cap.end
-    );
-    setCurrentCaption(activeCaption ? activeCaption.text : '');
-  };
-
-  useEffect(() => {
-    // Reset currentCaption when captions change
-    setCurrentCaption('');
-  }, [captions]);
+  const [captions, setCaptions] = useState([]);
 
   return (
     <div className="app-container">
-      <h1>🎬 Lala AI Studio - Timeline + Captions 🚀</h1>
-      <input type="file" accept="video/*" onChange={handleVideoChange} />
-      
-      {videoUrl && (
-        <div style={{ position: 'relative', marginTop: '1rem' }}>
-          <video
-            ref={videoRef}
-            src={videoUrl}
-            controls
-            width="640"
-            height="360"
-            onTimeUpdate={handleTimeUpdate}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '60px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              color: 'yellow',
-              fontSize: '20px',
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              padding: '4px 8px',
-              borderRadius: '4px',
-              minWidth: '300px',
-              textAlign: 'center',
-            }}
-          >
-            {currentCaption}
-          </div>
-        </div>
-      )}
+      <h1>🎬 Lala AI Studio — Phase 10 🚀</h1>
 
-      <TimelineEditor onUpload={handleUploadCaptions} />
+      {/* Video Player */}
+      <video
+        ref={videoRef}
+        controls
+        width="640"
+        height="360"
+        style={{ border: '1px solid #333', marginBottom: '20px' }}
+      >
+        <source src="/sample.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+
+      {/* Captions Preview */}
+      <div
+        style={{
+          marginBottom: '20px',
+          minHeight: '40px',
+          fontSize: '18px',
+          color: '#333',
+        }}
+      >
+        {(() => {
+          const currentTime = videoRef.current?.currentTime || 0;
+          const activeCaption = captions.find(
+            (cap) => currentTime >= cap.start && currentTime <= cap.end
+          );
+          return activeCaption ? activeCaption.text : '';
+        })()}
+      </div>
+
+      {/* Timeline Editor */}
+      <TimelineEditor
+        videoRef={videoRef}
+        captions={captions}
+        setCaptions={setCaptions}
+      />
     </div>
   );
-}
+};
 
 export default App;

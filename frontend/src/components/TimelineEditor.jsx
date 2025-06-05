@@ -1,158 +1,194 @@
-import React, { useState } from 'react';
-import Draggable from 'react-draggable';
+// frontend/components/TimelineEditor.jsx
 
-function TimelineEditor({ onUpload }) {
-  const [captions, setCaptions] = useState([]);
-  const [editingCaption, setEditingCaption] = useState(null);
-  const [editText, setEditText] = useState('');
+import React, { useState, useEffect } from 'react';
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+const TimelineEditor = ({ videoRef, captions, setCaptions }) => {
+  const [selectedCaption, setSelectedCaption] = useState(null);
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = JSON.parse(e.target.result);
-        setCaptions(data);
-        onUpload(data);
-      } catch (err) {
-        console.error('Error parsing captions:', err);
-      }
+  useEffect(() => {
+    const handleTimeUpdate = () => {
+      const currentTime = videoRef.current?.currentTime || 0;
+      const activeCaption = captions.find(
+        (cap) => currentTime >= cap.start && currentTime <= cap.end
+      );
+      setSelectedCaption(activeCaption ? activeCaption.id : null);
     };
-    reader.readAsText(file);
-  };
 
-  const handleDrag = (index, e, data) => {
-    const newCaptions = [...captions];
-    const newStart = Math.max(0, data.x / 10); // 1px = 0.1s
-    const duration = newCaptions[index].end - newCaptions[index].start;
-    newCaptions[index].start = newStart;
-    newCaptions[index].end = newStart + duration;
-    setCaptions(newCaptions);
-    onUpload(newCaptions);
-  };
+    const video = videoRef.current;
+    video?.addEventListener('timeupdate', handleTimeUpdate);
 
-  const handleResize = (index, delta) => {
-    const newCaptions = [...captions];
-    newCaptions[index].end = Math.max(
-      newCaptions[index].start + 0.1,
-      newCaptions[index].end + delta
+    return () => {
+      video?.removeEventListener('timeupdate', handleTimeUpdate);
+    };
+  }, [videoRef, captions]);
+
+  const handleCaptionChange = (id, field, value) => {
+    setCaptions((prev) =>
+      prev.map((cap) =>
+        cap.id === id ? { ...cap, [field]: value } : cap
+      )
     );
-    setCaptions(newCaptions);
-    onUpload(newCaptions);
   };
 
-  const handleCaptionClick = (caption, index) => {
-    setEditingCaption(index);
-    setEditText(caption.text);
+  const handleAddCaption = () => {
+    const newCaption = {
+      id: Date.now(),
+      start: 0,
+      end: 2,
+      text: 'New caption',
+    };
+    setCaptions((prev) => [...prev, newCaption]);
   };
 
-  const handleSaveEdit = () => {
-    const newCaptions = [...captions];
-    newCaptions[editingCaption].text = editText;
-    setCaptions(newCaptions);
-    onUpload(newCaptions);
-    setEditingCaption(null);
+  const handleDeleteCaption = (id) => {
+    setCaptions((prev) => prev.filter((cap) => cap.id !== id));
   };
 
-  const handleAiSuggest = () => {
-    // Placeholder: in real flow, call API and update captions
-    alert('🚀 AI Suggest placeholder!');
+  const handleSaveCaptions = async () => {
+    try {
+      const response = await fetch('/api/captions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ captions }),
+      });
+
+      if (response.ok) {
+        alert('✅ Captions saved!');
+      } else {
+        alert('Failed to save captions');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error saving captions');
+    }
+  };
+
+  const handleLoadCaptions = async () => {
+    try {
+      const response = await fetch('/api/captions');
+      const data = await response.json();
+
+      if (response.ok && data.captions) {
+        setCaptions(data.captions);
+        alert('✅ Captions loaded!');
+      } else {
+        alert('Failed to load captions');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error loading captions');
+    }
+  };
+
+  const handleAISuggest = async () => {
+    try {
+      const response = await fetch('/api/ai/suggest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ captions }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.suggestedCaptions) {
+        setCaptions(data.suggestedCaptions);
+        alert('✅ AI suggestions applied!');
+      } else {
+        alert('Failed to apply AI suggestions');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error applying AI suggestions');
+    }
+  };
+
+  const handleExportCaptions = async () => {
+    try {
+      const response = await fetch('/api/export', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ captions }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const link = document.createElement('a');
+        link.href = data.file;
+        link.download = 'captions_export.txt';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        alert('✅ Captions exported!');
+      } else {
+        alert('Failed to export captions');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error exporting captions');
+    }
   };
 
   return (
-    <div style={{ marginTop: '2rem' }}>
-      <h2>🕒 Timeline Editor</h2>
-      <input type="file" accept="application/json" onChange={handleFileChange} />
+    <div>
+      <h3>🕒 Timeline Editor</h3>
 
-      <div style={{
-        marginTop: '1rem',
-        position: 'relative',
-        height: '60px',
-        border: '1px solid #ccc',
-        overflowX: 'scroll',
-        whiteSpace: 'nowrap',
-      }}>
-        {captions.map((caption, index) => (
-          <Draggable
-            key={index}
-            axis="x"
-            bounds="parent"
-            position={{ x: caption.start * 10, y: 0 }}
-            onDrag={(e, data) => handleDrag(index, e, data)}
+      <button onClick={handleAddCaption}>➕ Add Caption</button>
+      <button onClick={handleSaveCaptions}>💾 Save</button>
+      <button onClick={handleLoadCaptions}>📂 Load</button>
+      <button onClick={handleAISuggest}>🤖 AI Suggest</button>
+      <button onClick={handleExportCaptions}>🚀 Export</button>
+
+      <div style={{ marginTop: '10px' }}>
+        {captions.map((cap) => (
+          <div
+            key={cap.id}
+            style={{
+              border: '1px solid #ccc',
+              padding: '8px',
+              marginBottom: '5px',
+              backgroundColor: cap.id === selectedCaption ? '#def' : '#fff',
+            }}
           >
-            <div
-              onClick={() => handleCaptionClick(caption, index)}
-              style={{
-                display: 'inline-block',
-                width: `${(caption.end - caption.start) * 10}px`,
-                height: '40px',
-                backgroundColor: '#4caf50',
-                color: 'white',
-                textAlign: 'center',
-                lineHeight: '40px',
-                margin: '10px 2px',
-                cursor: 'pointer',
-                position: 'relative',
-              }}
-            >
-              {caption.text}
-
-              {/* Simple resize handle */}
-              <div
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  const startX = e.clientX;
-                  const onMouseMove = (moveEvent) => {
-                    const deltaPx = moveEvent.clientX - startX;
-                    const deltaSec = deltaPx / 10;
-                    handleResize(index, deltaSec);
-                  };
-                  const onMouseUp = () => {
-                    window.removeEventListener('mousemove', onMouseMove);
-                    window.removeEventListener('mouseup', onMouseUp);
-                  };
-                  window.addEventListener('mousemove', onMouseMove);
-                  window.addEventListener('mouseup', onMouseUp);
-                }}
-                style={{
-                  position: 'absolute',
-                  right: '0',
-                  top: '0',
-                  width: '8px',
-                  height: '100%',
-                  backgroundColor: '#333',
-                  cursor: 'ew-resize',
-                }}
+            <label>
+              Start:{' '}
+              <input
+                type="number"
+                value={cap.start}
+                onChange={(e) =>
+                  handleCaptionChange(cap.id, 'start', parseFloat(e.target.value))
+                }
+                step="0.1"
               />
-            </div>
-          </Draggable>
+            </label>{' '}
+            <label>
+              End:{' '}
+              <input
+                type="number"
+                value={cap.end}
+                onChange={(e) =>
+                  handleCaptionChange(cap.id, 'end', parseFloat(e.target.value))
+                }
+                step="0.1"
+              />
+            </label>{' '}
+            <label>
+              Text:{' '}
+              <input
+                type="text"
+                value={cap.text}
+                onChange={(e) =>
+                  handleCaptionChange(cap.id, 'text', e.target.value)
+                }
+              />
+            </label>{' '}
+            <button onClick={() => handleDeleteCaption(cap.id)}>🗑️ Delete</button>
+          </div>
         ))}
       </div>
-
-      {editingCaption !== null && (
-        <div style={{ marginTop: '1rem' }}>
-          <h3>Edit Caption</h3>
-          <textarea
-            value={editText}
-            onChange={(e) => setEditText(e.target.value)}
-            rows={3}
-            style={{ width: '100%' }}
-          />
-          <br />
-          <button onClick={handleSaveEdit}>Save</button>
-          <button onClick={() => setEditingCaption(null)} style={{ marginLeft: '10px' }}>
-            Cancel
-          </button>
-        </div>
-      )}
-
-      <button onClick={handleAiSuggest} style={{ marginTop: '1rem' }}>
-        🤖 AI Suggest Captions 🚀
-      </button>
     </div>
   );
-}
+};
 
 export default TimelineEditor;
