@@ -1,38 +1,39 @@
-// Import required modules
+// server.js
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import healthRouter from './routes/health.js';
 
-// Initialize dotenv to load environment variables
 dotenv.config();
 
-// Create Express app
 const app = express();
-
-// Middleware
-app.use(cors());
-app.use(express.json()); // for parsing application/json
-
-// Load PORT from .env or fallback to 3000
 const PORT = process.env.PORT || 3000;
 
-// Routes
+app.use(cors());
+app.use(express.json());
 
-// Health check route
-app.get('/health', (req, res) => {
-    res.json({ status: 'ok', message: 'Backend is alive 🚀' });
+app.use('/api/health', healthRouter);
+
+// ✨ Dummy captions endpoint
+app.post('/api/captions', (req, res) => {
+  const { videoUrl } = req.body;
+  console.log(`🤖 Generating captions for video: ${videoUrl}`);
+
+  // Dummy captions
+  const captions = [
+    { start: 0, end: 5, text: 'Hello world' },
+    { start: 5, end: 10, text: 'This is an AI-generated caption' },
+    { start: 10, end: 15, text: 'Lala AI Studio rocks! 🚀' },
+  ];
+
+  res.json({ captions });
 });
 
-// Simple echo connector route
-app.post('/echo', (req, res) => {
-    const { message } = req.body;
-    res.json({
-        echoed: message,
-        time: new Date().toISOString()
-    });
+// Root
+app.get('/', (req, res) => {
+  res.send('Lala AI Studio Backend is running 🚀✨');
 });
 
-// Start server
 app.listen(PORT, () => {
-    console.log(`✅ Server is running on port ${PORT}`);
+  console.log(`✅ Server is running on port ${PORT}`);
 });

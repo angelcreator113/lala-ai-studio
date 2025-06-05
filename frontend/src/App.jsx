@@ -1,36 +1,76 @@
-// src/App.jsx
-import React, { useState } from 'react';
-import { sendEcho } from './api';
-import './App.css'; // your styles
+import React, { useState, useRef, useEffect } from 'react';
+import TimelineEditor from './components/TimelineEditor';
 
 function App() {
-    const [input, setInput] = useState('');
-    const [response, setResponse] = useState(null);
+  const [videoUrl, setVideoUrl] = useState('');
+  const [captions, setCaptions] = useState([]);
+  const [currentCaption, setCurrentCaption] = useState('');
+  const videoRef = useRef(null);
 
-    const handleSend = async () => {
-        const data = await sendEcho(input);
-        setResponse(data);
-    };
+  const handleVideoChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setVideoUrl(url);
+      setCaptions([]); // reset captions if new video
+    }
+  };
 
-    return (
-        <div className="app-container">
-            <h1>Frontend ↔️ Backend Connector 🚀</h1>
-            <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type a message"
-            />
-            <button onClick={handleSend}>Send to Backend</button>
+  const handleUploadCaptions = (uploadedCaptions) => {
+    setCaptions(uploadedCaptions);
+  };
 
-            {response && (
-                <div style={{ marginTop: '20px' }}>
-                    <h3>Backend Response:</h3>
-                    <pre>{JSON.stringify(response, null, 2)}</pre>
-                </div>
-            )}
-        </div>
+  const handleTimeUpdate = () => {
+    const currentTime = videoRef.current?.currentTime || 0;
+    const activeCaption = captions.find(
+      (cap) => currentTime >= cap.start && currentTime <= cap.end
     );
+    setCurrentCaption(activeCaption ? activeCaption.text : '');
+  };
+
+  useEffect(() => {
+    // Reset currentCaption when captions change
+    setCurrentCaption('');
+  }, [captions]);
+
+  return (
+    <div className="app-container">
+      <h1>🎬 Lala AI Studio - Timeline + Captions 🚀</h1>
+      <input type="file" accept="video/*" onChange={handleVideoChange} />
+      
+      {videoUrl && (
+        <div style={{ position: 'relative', marginTop: '1rem' }}>
+          <video
+            ref={videoRef}
+            src={videoUrl}
+            controls
+            width="640"
+            height="360"
+            onTimeUpdate={handleTimeUpdate}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '60px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              color: 'yellow',
+              fontSize: '20px',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              minWidth: '300px',
+              textAlign: 'center',
+            }}
+          >
+            {currentCaption}
+          </div>
+        </div>
+      )}
+
+      <TimelineEditor onUpload={handleUploadCaptions} />
+    </div>
+  );
 }
 
 export default App;

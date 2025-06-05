@@ -1,26 +1,23 @@
-// src/api.js
+// frontend/src/api.js
 
-const BACKEND_URL = 'https://literate-garbanzo-r4xgxxj9ww472pq7g-3000.app.github.dev'; // your backend base URL
+export async function generateCaptions(videoUrl) {
+  try {
+    const response = await fetch('http://localhost:3000/api/captions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ videoUrl }),
+    });
 
-export async function sendEcho(message) {
-    try {
-        const response = await fetch(`${BACKEND_URL}/echo`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ message })
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data;
-
-    } catch (error) {
-        console.error('sendEcho failed:', error);
-        return { error: error.message };
+    if (!response.ok) {
+      throw new Error('Failed to generate captions');
     }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('API error:', error);
+    throw error;
+  }
 }
