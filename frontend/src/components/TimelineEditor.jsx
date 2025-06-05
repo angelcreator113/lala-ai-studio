@@ -9,6 +9,18 @@ const TimelineEditor = ({ onUpload }) => {
     setCaptions([...captions, { start: 0, end: 5, text: 'New Caption' }]);
   };
 
+  const handleDeleteCaption = (index) => {
+    const newCaptions = captions.filter((_, i) => i !== index);
+    setCaptions(newCaptions);
+  };
+
+  const handleEditCaption = (index, field, value) => {
+    const updated = captions.map((cap, i) =>
+      i === index ? { ...cap, [field]: value } : cap
+    );
+    setCaptions(updated);
+  };
+
   const handleUploadClick = () => {
     if (onUpload) {
       onUpload(captions);
@@ -18,7 +30,7 @@ const TimelineEditor = ({ onUpload }) => {
   const handleGenerateCaptions = async () => {
     setLoading(true);
     try {
-      const result = await generateCaptions('https://example.com/video.mp4'); // placeholder URL
+      const result = await generateCaptions('https://example.com/video.mp4'); // placeholder
       setCaptions(result.captions);
     } catch (error) {
       console.error('Failed to generate captions:', error);
@@ -69,8 +81,33 @@ const TimelineEditor = ({ onUpload }) => {
 
       <ul style={{ marginTop: '1rem' }}>
         {captions.map((cap, index) => (
-          <li key={index}>
-            [{cap.start}s - {cap.end}s]: {cap.text}
+          <li key={index} style={{ marginBottom: '8px' }}>
+            <div>
+              Start:{' '}
+              <input
+                type="number"
+                value={cap.start}
+                onChange={(e) => handleEditCaption(index, 'start', parseFloat(e.target.value))}
+                style={{ width: '60px' }}
+              />{' '}
+              End:{' '}
+              <input
+                type="number"
+                value={cap.end}
+                onChange={(e) => handleEditCaption(index, 'end', parseFloat(e.target.value))}
+                style={{ width: '60px' }}
+              />{' '}
+              Text:{' '}
+              <input
+                type="text"
+                value={cap.text}
+                onChange={(e) => handleEditCaption(index, 'text', e.target.value)}
+                style={{ width: '300px' }}
+              />{' '}
+              <button onClick={() => handleDeleteCaption(index)} style={{ marginLeft: '0.5rem' }}>
+                ❌ Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>

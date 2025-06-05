@@ -1,29 +1,23 @@
-// Echo test API
-export async function sendEcho(message) {
-  const response = await fetch('/api/echo', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message }),
-  });
+// frontend/src/api.js
 
-  if (!response.ok) {
-    throw new Error('Echo API call failed');
-  }
-
-  return await response.json();
-}
-
-// Generate captions API
 export async function generateCaptions(videoUrl) {
-  const response = await fetch('/api/generate-captions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ videoUrl }),
-  });
+  try {
+    const response = await fetch('http://localhost:3000/api/captions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ videoUrl }),
+    });
 
-  if (!response.ok) {
-    throw new Error('Failed to generate captions');
+    if (!response.ok) {
+      throw new Error('Failed to generate captions');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('API error:', error);
+    throw error;
   }
-
-  return await response.json();
 }
