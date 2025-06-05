@@ -1,19 +1,14 @@
-export async function fetchCaptions() {
-  const res = await fetch('/api/captions');
-  const data = await res.json();
-  return data;
-}
+const API_URL = 'http://localhost:3000/api';
 
 export async function saveCaptions(captions) {
-  await fetch('/api/captions', {
+  const response = await fetch(`${API_URL}/captions`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(captions),
+    body: JSON.stringify({ captions })
   });
+  return response.json();
 }
 
 export async function exportCaptions() {
-  const res = await fetch('/api/export');
-  const data = await res.json();
-  return data.fileUrl;
+  window.open(`${API_URL}/export`);
 }
