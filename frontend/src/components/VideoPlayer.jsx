@@ -1,35 +1,53 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 
-export default function VideoPlayer({ captions }) {
-  const videoRef = useRef(null);
-  const [currentTime, setCurrentTime] = useState(0);
+function VideoPlayer({ captions }) {
+  const videoRef = useRef();
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    const updateCaptions = () => {
+      const currentTime = video.currentTime;
 
-    const updateTime = () => setCurrentTime(video.currentTime);
-    video.addEventListener('timeupdate', updateTime);
-    return () => video.removeEventListener('timeupdate', updateTime);
-  }, []);
+      captions.forEach((caption, index) => {
+        const element = document.getElementById(`caption-${index}`);
+        if (element) {
+          const isVisible = currentTime >= caption.start && currentTime <= caption.end;
+          element.style.opacity = isVisible && caption.effects?.fade ? '1' : isVisible ? '1' : '0';
+          element.style.color = caption.effects?.color || '#fff';
+          element.style.transform = `scale(${caption.effects?.scale || 1})`;
+        }
+      });
+    };
 
-  const activeCaptions = captions.filter(
-    cap => currentTime >= cap.start && currentTime <= cap.end
-  );
+    video.addEventListener('timeupdate', updateCaptions);
+    return () => video.removeEventListener('timeupdate', updateCaptions);
+  }, [captions]);
 
   return (
-    <div style={{ marginBottom: '20px' }}>
-      <video ref={videoRef} width="640" controls>
-        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-        Your browser does not support HTML video.
+    <div className="video-player">
+      <video ref={videoRef} controls width="600">
+        <source src="/sample.mp4" type="video/mp4" />
       </video>
-      <div style={{ marginTop: '10px', minHeight: '40px' }}>
-        {activeCaptions.map(cap => (
-          <div key={cap.id} style={{ background: '#222', color: '#fff', padding: '5px', marginBottom: '5px' }}>
-            {cap.text}
-          </div>
-        ))}
-      </div>
+      {captions.map((caption, index) => (
+        <div
+          key={index}
+          id={`caption-${index}`}
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            opacity: 0,
+            color: '#fff',
+            fontSize: '24px',
+            pointerEvents: 'none'
+          }}
+        >
+          {caption.text}
+        </div>
+      ))}
     </div>
   );
 }
+
+export default VideoPlayer;
