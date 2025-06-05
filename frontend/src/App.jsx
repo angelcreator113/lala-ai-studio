@@ -1,36 +1,30 @@
-// src/App.jsx
 import React, { useState } from 'react';
-import { sendEcho } from './api';
-import './App.css'; // your styles
+import TimelineEditor from './components/TimelineEditor';
+import { uploadCaptions } from './api';
 
 function App() {
-    const [input, setInput] = useState('');
-    const [response, setResponse] = useState(null);
+  const [uploadResult, setUploadResult] = useState(null);
 
-    const handleSend = async () => {
-        const data = await sendEcho(input);
-        setResponse(data);
-    };
+  const handleUpload = async (captions) => {
+    const result = await uploadCaptions(captions);
+    setUploadResult(result);
+  };
 
-    return (
-        <div className="app-container">
-            <h1>Frontend ↔️ Backend Connector 🚀</h1>
-            <input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type a message"
-            />
-            <button onClick={handleSend}>Send to Backend</button>
+  return (
+    <div style={{ padding: '2rem' }}>
+      <h1>🎬 Lala AI Studio</h1>
 
-            {response && (
-                <div style={{ marginTop: '20px' }}>
-                    <h3>Backend Response:</h3>
-                    <pre>{JSON.stringify(response, null, 2)}</pre>
-                </div>
-            )}
+      {/* Timeline Editor */}
+      <TimelineEditor onUpload={handleUpload} />
+
+      {/* Upload result */}
+      {uploadResult && (
+        <div style={{ marginTop: '1rem', color: 'green' }}>
+          ✅ Upload Result: {uploadResult.message} (Count: {uploadResult.count})
         </div>
-    );
+      )}
+    </div>
+  );
 }
 
 export default App;

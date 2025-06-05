@@ -1,26 +1,13 @@
-// src/api.js
+export async function uploadCaptions(captions) {
+  const response = await fetch('/api/upload-captions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ captions }),
+  });
 
-const BACKEND_URL = 'https://literate-garbanzo-r4xgxxj9ww472pq7g-3000.app.github.dev'; // your backend base URL
+  if (!response.ok) {
+    throw new Error('Failed to upload captions');
+  }
 
-export async function sendEcho(message) {
-    try {
-        const response = await fetch(`${BACKEND_URL}/echo`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ message })
-        });
-
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data;
-
-    } catch (error) {
-        console.error('sendEcho failed:', error);
-        return { error: error.message };
-    }
+  return await response.json();
 }
