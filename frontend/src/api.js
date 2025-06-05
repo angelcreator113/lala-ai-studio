@@ -1,23 +1,19 @@
-// frontend/src/api.js
+export async function fetchCaptions() {
+  const res = await fetch('/api/captions');
+  const data = await res.json();
+  return data;
+}
 
-export async function generateCaptions(videoUrl) {
-  try {
-    const response = await fetch('http://localhost:3000/api/captions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ videoUrl }),
-    });
+export async function saveCaptions(captions) {
+  await fetch('/api/captions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(captions),
+  });
+}
 
-    if (!response.ok) {
-      throw new Error('Failed to generate captions');
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('API error:', error);
-    throw error;
-  }
+export async function exportCaptions() {
+  const res = await fetch('/api/export');
+  const data = await res.json();
+  return data.fileUrl;
 }
