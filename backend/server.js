@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import fs from 'fs';
+import multer from 'multer';
+import path from 'path';
 
 dotenv.config();
 
@@ -11,62 +13,36 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Health check
+// Health route
 app.get('/api/health', (req, res) => {
-  res.send({ status: 'ok', message: 'Lala AI Studio Backend is running 🚀✨' });
+  res.json({ status: 'ok', message: 'Backend is running 🚀' });
 });
 
-// Save captions (with effects)
-app.post('/api/captions', (req, res) => {
-  const captions = req.body.captions;
-  console.log('Saving captions:', captions);
+// Multer setup
+const upload = multer({ dest: 'uploads/' });
 
-  fs.writeFileSync('backend/exports/captions.json', JSON.stringify(captions, null, 2));
+// Auto-Caption route
+app.post('/api/auto-caption', upload.single('video'), async (req, res) => {
+  try {
+    const videoPath = req.file.path;
 
-  res.send({ status: 'ok', message: 'Captions saved successfully!' });
-});
+    console.log(`🤖 Processing AI auto-caption for video: ${videoPath}`);
 
-// Export captions (download latest)
-app.get('/api/export', (req, res) => {
-  const filePath = 'backend/exports/captions.json';
-  res.download(filePath, 'captions.json');
-});
+    // Simulated AI captions
+    const aiCaptions = [
+      { start: 0, end: 2, text: 'Hello and welcome!' },
+      { start: 3, end: 5, text: 'This is an AI-generated caption.' },
+      { start: 6, end: 8, text: 'Enjoy your video!' },
+    ];
 
-app.listen(PORT, () => {
-  console.log(`✅ Server is running on port ${PORT}`);
-});
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import fs from 'fs';
+    // Cleanup uploaded file
+    fs.unlinkSync(videoPath);
 
-dotenv.config();
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(cors());
-app.use(express.json());
-
-// Health check
-app.get('/api/health', (req, res) => {
-  res.send({ status: 'ok', message: 'Lala AI Studio Backend is running 🚀✨' });
-});
-
-// Save captions (with effects)
-app.post('/api/captions', (req, res) => {
-  const captions = req.body.captions;
-  console.log('Saving captions:', captions);
-
-  fs.writeFileSync('backend/exports/captions.json', JSON.stringify(captions, null, 2));
-
-  res.send({ status: 'ok', message: 'Captions saved successfully!' });
-});
-
-// Export captions (download latest)
-app.get('/api/export', (req, res) => {
-  const filePath = 'backend/exports/captions.json';
-  res.download(filePath, 'captions.json');
+    res.json({ captions: aiCaptions });
+  } catch (err) {
+    console.error('Error in /api/auto-caption:', err);
+    res.status(500).json({ error: 'Failed to auto-caption video.' });
+  }
 });
 
 app.listen(PORT, () => {
