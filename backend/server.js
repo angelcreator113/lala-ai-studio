@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import healthRouter from './routes/health.js';
 import fs from 'fs';
-import multer from 'multer';
 import path from 'path';
 
 dotenv.config();
@@ -14,35 +14,44 @@ app.use(cors());
 app.use(express.json());
 
 // Health route
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Backend is running 🚀' });
+app.use('/api/health', healthRouter);
+
+// Echo route
+app.post('/api/echo', (req, res) => {
+  const { message } = req.body;
+  res.json({ response: `Echo: ${message}` });
 });
 
-// Multer setup
-const upload = multer({ dest: 'uploads/' });
+// Save captions
+app.post('/api/save-captions', (req, res) => {
+  const { captions } = req.body;
+  const filePath = path.join(process.cwd(), 'backend', 'exports', 'captions.json');
+  fs.writeFileSync(filePath, JSON.stringify(captions, null, 2));
+  res.json({ success: true, path: filePath });
+});
 
-// Auto-Caption route
-app.post('/api/auto-caption', upload.single('video'), async (req, res) => {
-  try {
-    const videoPath = req.file.path;
+// Export captions
+app.get('/api/export-captions', (req, res) => {
+  const filePath = path.join(process.cwd(), 'backend', 'exports', 'captions.json');
+  res.download(filePath);
+});
 
-    console.log(`🤖 Processing AI auto-caption for video: ${videoPath}`);
+// Phase 13 — AI Refine Captions
+app.post('/api/ai-refine', (req, res) => {
+  const { captions } = req.body;
+  console.log('AI Refine requested:', captions);
 
-    // Simulated AI captions
-    const aiCaptions = [
-      { start: 0, end: 2, text: 'Hello and welcome!' },
-      { start: 3, end: 5, text: 'This is an AI-generated caption.' },
-      { start: 6, end: 8, text: 'Enjoy your video!' },
-    ];
+  // Simulate AI refinement
+  const refined = captions.map(cap => ({
+    ...cap,
+    text: cap.text + ' (refined ✨)',
+  }));
 
-    // Cleanup uploaded file
-    fs.unlinkSync(videoPath);
+  res.json({ captions: refined });
+});
 
-    res.json({ captions: aiCaptions });
-  } catch (err) {
-    console.error('Error in /api/auto-caption:', err);
-    res.status(500).json({ error: 'Failed to auto-caption video.' });
-  }
+app.get('/', (req, res) => {
+  res.send('Lala AI Studio Backend is running 🚀✨');
 });
 
 app.listen(PORT, () => {
