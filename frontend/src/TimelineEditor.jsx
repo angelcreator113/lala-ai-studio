@@ -1,87 +1,86 @@
-// src/TimelineEditor.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./TimelineEditor.css";
+import {
+  alignCaptions,
+  splitMergeCaptions,
+  importCaptions,
+} from "./api";
 
 function TimelineEditor({ projectData, onProjectDataChange }) {
-  const { videoFile, captions } = projectData;
+  const [undoStack, setUndoStack] = useState([]);
+  const [redoStack, setRedoStack] = useState([]);
 
-  const handleVideoUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      onProjectDataChange({ ...projectData, videoFile: URL.createObjectURL(file) });
-    }
+  const handleAlignClick = async () => {
+    const newCaptions = await alignCaptions(projectData);
+    saveState();
+    onProjectDataChange({ ...projectData, captions: newCaptions });
   };
 
-  const handleGenerateCaptions = async () => {
-    const res = await fetch("http://localhost:3000/api/captions/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ videoFile }),
-    });
-    const data = await res.json();
-    onProjectDataChange({ ...projectData, captions: data.captions });
+  const handleSplitMergeClick = async () => {
+    const newCaptions = await splitMergeCaptions(projectData);
+    saveState();
+    onProjectDataChange({ ...projectData, captions: newCaptions });
   };
 
-  const handleRefineCaptions = async () => {
-    const res = await fetch("http://localhost:3000/api/captions/refine", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ captions }),
-    });
-    const data = await res.json();
-    onProjectDataChange({ ...projectData, captions: data.captions });
+  const handleImport = async (file) => {
+    const importedCaptions = await importCaptions(file);
+    saveState();
+    onProjectDataChange({ ...projectData, captions: importedCaptions });
   };
 
-  const handleSaveProject = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projectData));
-    const dlAnchor = document.createElement("a");
-    dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download", "project.json");
-    dlAnchor.click();
+  const saveState = () => {
+    setUndoStack([...undoStack, projectData]);
+    setRedoStack([]);
   };
 
-  const handleExportSRT = () => {
-    const srt = captions.map((cap, i) => {
-      return `${i + 1}\n${cap.start} --> ${cap.end}\n${cap.text}\n`;
-    }).join("\n");
-    const blob = new Blob([srt], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const dlAnchor = document.createElement("a");
-    dlAnchor.setAttribute("href", url);
-    dlAnchor.setAttribute("download", "captions.srt");
-    dlAnchor.click();
+  const handleUndo = () => {
+    if (undoStack.length === 0) return;
+    const prevState = undoStack.pop();
+    setRedoStack([projectData, ...redoStack]);
+    onProjectDataChange(prevState);
+    setUndoStack([...undoStack]);
+  };
+
+  const handleRedo = () => {
+    if (redoStack.length === 0) return;
+    const nextState = redoStack.shift();
+    setUndoStack([...undoStack, projectData]);
+    onProjectDataChange(nextState);
+    setRedoStack([...redoStack]);
   };
 
   return (
-    <div>
-      <h2>🎞️ Timeline Editor</h2>
-      <div>
-        <label>
-          Upload Video:
-          <input type="file" onChange={handleVideoUpload} />
-        </label>
+    <div className="timeline-editor">
+      <h2>🕒 Timeline Editor</h2>
+      <div className="editor-toolbar">
+        <button onClick={handleAlignClick}>🤖 AI Align Captions</button>
+        <button onClick={handleSplitMergeClick}>✨ AI Split/Merge</button>
+        <input
+          type="file"
+          accept=".srt"
+          onChange={(e) => handleImport(e.target.files[0])}
+        />
+        <button onClick={handleUndo} disabled={undoStack.length === 0}>
+          ↩️ Undo
+        </button>
+        <button onClick={handleRedo} disabled={redoStack.length === 0}>
+          ↪️ Redo
+        </button>
       </div>
 
-      {videoFile && (
-        <div>
-          <video src={videoFile} controls width="600" />
-        </div>
-      )}
-
-      <h3>📝 Captions:</h3>
-      <ul>
-        {captions.map((cap, index) => (
-          <li key={index}>
-            [{cap.start} - {cap.end}] {cap.text}
-          </li>
+      <div className="timeline-bars">
+        {projectData.captions.map((cap, index) => (
+          <div
+            key={index}
+            className="timeline-bar"
+            style={{
+              left: `${cap.start * 10}px`,
+              width: `${(cap.end - cap.start) * 10}px`,
+            }}
+          >
+            {cap.text}
+          </div>
         ))}
-      </ul>
-
-      <div>
-        <button onClick={handleGenerateCaptions}>✨ Generate Captions</button>
-        <button onClick={handleRefineCaptions}>🔍 Refine Captions</button>
-        <button onClick={handleSaveProject}>💾 Save Project (JSON)</button>
-        <button onClick={handleExportSRT}>📄 Export SRT</button>
       </div>
     </div>
   );
