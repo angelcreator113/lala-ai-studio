@@ -9,8 +9,8 @@ function App() {
   });
 
   return (
-    <div className="App">
-      <h1>🎬 Lala AI Studio 🚀</h1>
+    <div className="app-container">
+      <h1>Lala AI Studio 🎬🚀</h1>
       <TimelineEditor
         projectData={projectData}
         onProjectDataChange={setProjectData}

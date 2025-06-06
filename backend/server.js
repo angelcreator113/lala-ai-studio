@@ -20,7 +20,8 @@ app.post("/api/captions/generate", (req, res) => {
   // Mock captions
   const mockCaptions = [
     { start: 0, end: 2, text: "Welcome to Lala AI Studio!" },
-    { start: 2, end: 4, text: "This is your AI caption generator." },
+    { start: 2, end: 5, text: "This is your AI caption generator." },
+    { start: 5, end: 7, text: "You can save and export captions." },
   ];
 
   res.json({ captions: mockCaptions });
