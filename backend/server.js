@@ -1,17 +1,32 @@
-// backend/server.js
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
-import captionsRouter from "./routes/captions.js";
 
-dotenv.config();
 const app = express();
+const PORT = 3000;
+
+// Middlewares
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/captions", captionsRouter);
+// Health check
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", message: "Backend is running 🚀" });
+});
 
-app.get("/api/health", (req, res) => res.send("OK"));
+// Mock AI Captions
+app.post("/api/captions/generate", (req, res) => {
+  console.log("[POST] /api/captions/generate", req.body);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+  // Mock captions
+  const mockCaptions = [
+    { start: 0, end: 2, text: "Welcome to Lala AI Studio!" },
+    { start: 2, end: 4, text: "This is your AI caption generator." },
+  ];
+
+  res.json({ captions: mockCaptions });
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`🚀 Backend server running on http://localhost:${PORT}`);
+});

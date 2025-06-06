@@ -1,87 +1,87 @@
-// src/TimelineEditor.jsx
 import React, { useState } from "react";
 import "./TimelineEditor.css";
 
 function TimelineEditor({ projectData, onProjectDataChange }) {
-  const { videoFile, captions } = projectData;
+  const [loading, setLoading] = useState(false);
 
   const handleVideoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      onProjectDataChange({ ...projectData, videoFile: URL.createObjectURL(file) });
+      onProjectDataChange({
+        ...projectData,
+        videoFile: file.name,
+      });
     }
   };
 
   const handleGenerateCaptions = async () => {
-    const res = await fetch("http://localhost:3000/api/captions/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ videoFile }),
-    });
-    const data = await res.json();
-    onProjectDataChange({ ...projectData, captions: data.captions });
-  };
+    if (!projectData.videoFile) {
+      alert("Please upload a video first!");
+      return;
+    }
 
-  const handleRefineCaptions = async () => {
-    const res = await fetch("http://localhost:3000/api/captions/refine", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ captions }),
-    });
-    const data = await res.json();
-    onProjectDataChange({ ...projectData, captions: data.captions });
-  };
+    setLoading(true);
 
-  const handleSaveProject = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projectData));
-    const dlAnchor = document.createElement("a");
-    dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download", "project.json");
-    dlAnchor.click();
-  };
+    try {
+      const response = await fetch("http://localhost:3000/api/captions/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ videoFile: projectData.videoFile }),
+      });
 
-  const handleExportSRT = () => {
-    const srt = captions.map((cap, i) => {
-      return `${i + 1}\n${cap.start} --> ${cap.end}\n${cap.text}\n`;
-    }).join("\n");
-    const blob = new Blob([srt], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const dlAnchor = document.createElement("a");
-    dlAnchor.setAttribute("href", url);
-    dlAnchor.setAttribute("download", "captions.srt");
-    dlAnchor.click();
+      const data = await response.json();
+
+      if (response.ok) {
+        onProjectDataChange({
+          ...projectData,
+          captions: data.captions,
+        });
+      } else {
+        alert("Failed to generate captions.");
+        console.error("API error:", data);
+      }
+    } catch (error) {
+      console.error("Error generating captions:", error);
+      alert("Error generating captions.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div>
+    <div className="timeline-editor">
       <h2>🎞️ Timeline Editor</h2>
+
       <div>
         <label>
           Upload Video:
-          <input type="file" onChange={handleVideoUpload} />
+          <input type="file" accept="video/*" onChange={handleVideoUpload} />
         </label>
       </div>
 
-      {videoFile && (
-        <div>
-          <video src={videoFile} controls width="600" />
-        </div>
-      )}
+      <div style={{ marginTop: "20px" }}>
+        <button
+          onClick={handleGenerateCaptions}
+          disabled={loading}
+          className="generate-button"
+        >
+          🤖 {loading ? "Generating..." : "Generate AI Captions"}
+        </button>
+      </div>
 
-      <h3>📝 Captions:</h3>
-      <ul>
-        {captions.map((cap, index) => (
-          <li key={index}>
-            [{cap.start} - {cap.end}] {cap.text}
-          </li>
-        ))}
-      </ul>
-
-      <div>
-        <button onClick={handleGenerateCaptions}>✨ Generate Captions</button>
-        <button onClick={handleRefineCaptions}>🔍 Refine Captions</button>
-        <button onClick={handleSaveProject}>💾 Save Project (JSON)</button>
-        <button onClick={handleExportSRT}>📄 Export SRT</button>
+      <div style={{ marginTop: "20px" }}>
+        <h3>🎬 Captions:</h3>
+        {projectData.captions.length === 0 ? (
+          <p>No captions yet.</p>
+        ) : (
+          <ul>
+            {projectData.captions.map((caption, index) => (
+              <li key={index}>
+                [{caption.start}s - {caption.end}s]: {caption.text}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

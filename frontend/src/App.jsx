@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useState } from "react";
 import TimelineEditor from "./TimelineEditor";
 import "./App.css";
@@ -10,7 +9,7 @@ function App() {
   });
 
   return (
-    <div>
+    <div className="App">
       <h1>🎬 Lala AI Studio 🚀</h1>
       <TimelineEditor
         projectData={projectData}
