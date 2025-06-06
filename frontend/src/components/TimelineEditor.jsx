@@ -1,40 +1,45 @@
-import React, { useState } from 'react';
-import { autoCaption } from './api';
+import React from 'react';
 
-function TimelineEditor({ videoFile, captions, setCaptions }) {
-  const handleAutoCaption = async () => {
-    try {
-      if (!videoFile) {
-        alert('Please upload a video first.');
-        return;
-      }
-
-      console.log('🚀 Sending video for AI auto-caption...');
-
-      const newCaptions = await autoCaption(videoFile);
-
-      console.log('🤖 Received AI captions:', newCaptions);
-
-      setCaptions(prev => [...prev, ...newCaptions]);
-    } catch (error) {
-      console.error('Error auto-captioning:', error);
-      alert('Failed to auto-caption.');
-    }
-  };
-
+function TimelineEditor({ captions, onUpdateCaptions, selectedId, setSelectedId }) {
   return (
-    <div>
-      <h2>🕒 Timeline Editor</h2>
-
-      <button onClick={handleAutoCaption}>🤖 Auto-Caption</button>
-
-      <ul>
-        {captions.map((cap, index) => (
-          <li key={index}>
-            [{cap.start} - {cap.end}] {cap.text}
-          </li>
-        ))}
-      </ul>
+    <div style={{ border: '1px solid gray', padding: '10px', height: '100px', overflowX: 'auto', whiteSpace: 'nowrap', position: 'relative' }}>
+      {captions.map((cap) => (
+        <div
+          key={cap.id}
+          className={`caption-bar ${selectedId === cap.id ? 'selected' : ''}`}
+          style={{
+            display: 'inline-block',
+            position: 'absolute',
+            left: `${cap.start * 10}px`,
+            width: `${(cap.end - cap.start) * 10}px`,
+            height: '40px',
+            background: selectedId === cap.id ? 'orange' : 'skyblue',
+            border: '1px solid #333',
+            cursor: 'pointer',
+            padding: '2px',
+          }}
+          onClick={() => setSelectedId(cap.id)}
+        >
+          <input
+            type="text"
+            value={cap.text}
+            onChange={(e) =>
+              onUpdateCaptions(
+                captions.map(c =>
+                  c.id === cap.id ? { ...c, text: e.target.value } : c
+                )
+              )
+            }
+            style={{
+              width: '100%',
+              border: 'none',
+              background: 'transparent',
+              color: '#000',
+              fontSize: '12px',
+            }}
+          />
+        </div>
+      ))}
     </div>
   );
 }
