@@ -1,29 +1,30 @@
-const API_BASE = "http://localhost:3000/api";
-
-export async function generateCaptions() {
-  const res = await fetch(`${API_BASE}/captions/generate`, {
+export async function generateCaptions(video) {
+  const res = await fetch("http://localhost:3000/api/captions/generate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({}),
+    body: JSON.stringify({ video }),
   });
-  const data = await res.json();
-  return data.captions || [];
+  return res.json();
 }
 
-export async function saveCaptions(captions) {
-  await fetch(`${API_BASE}/captions/save`, {
+export async function applyEffects(captions) {
+  const res = await fetch("http://localhost:3000/api/captions/effects", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ captions }),
   });
+  return res.json();
 }
 
-export async function exportCaptions(captions) {
-  const res = await fetch(`${API_BASE}/captions/export`, {
+export async function saveProject(projectData) {
+  await fetch("http://localhost:3000/api/captions/save", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ captions }),
+    body: JSON.stringify(projectData),
   });
-  const data = await res.json();
-  return data.url;
+}
+
+export async function exportCaptions() {
+  const res = await fetch("http://localhost:3000/api/captions/export");
+  return res.blob();
 }
