@@ -1,35 +1,20 @@
-.timeline-container {
-  margin: 20px 0;
-  padding: 10px;
-  background-color: #f0f0f0;
+/* TimelineEditor.css 🎨 */
+
+.timeline-editor {
   border: 2px solid #ccc;
+  padding: 1rem;
   border-radius: 8px;
-  overflow-x: auto;
+  margin-top: 1rem;
 }
 
-.timeline {
-  position: relative;
-  height: 60px;
-  background-color: #fff;
-  border: 1px solid #aaa;
+.timeline-editor h2 {
+  margin-bottom: 1rem;
 }
 
-.timeline-caption {
-  position: absolute;
-  top: 10px;
-  height: 40px;
-  background-color: #4caf50;
-  color: white;
-  padding: 5px;
-  border-radius: 4px;
-  cursor: grab;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s;
+.timeline-editor video {
+  margin-top: 1rem;
 }
 
-.timeline-caption:hover {
-  background-color: #45a049;
+.timeline-editor button {
+  margin-top: 0.5rem;
 }

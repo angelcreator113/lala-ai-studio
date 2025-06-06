@@ -1,0 +1,57 @@
+<!-- /frontend/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Meta basics -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- App title -->
+    <title>Lala AI Studio 🚀 — Smart Video Caption Editor</title>
+
+    <!-- SEO -->
+    <meta name="description" content="Lala AI Studio — AI-powered video caption editor with timeline, auto-caption, smart UX." />
+    <meta name="author" content="angelcreator113" />
+    <meta name="keywords" content="AI video editor, captions, timeline editor, auto-caption, Lala AI Studio" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <!-- Social preview (optional, can enhance later) -->
+    <!-- 
+    <meta property="og:title" content="Lala AI Studio 🚀" />
+    <meta property="og:description" content="AI-powered video caption editor." />
+    <meta property="og:image" content="/preview.png" />
+    -->
+
+    <!-- Basic CSS reset (optional but helpful) -->
+    <style>
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html, body {
+        height: 100%;
+        font-family: system-ui, sans-serif;
+        background: #f9f9f9;
+        color: #222;
+      }
+
+      #root {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- React root -->
+    <div id="root"></div>
+
+    <!-- React entry point -->
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
