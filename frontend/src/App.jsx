@@ -1,52 +1,55 @@
 import React, { useState } from 'react';
-import TimelineEditor from './components/TimelineEditor';
-import { sendEcho, saveCaptions, exportCaptions, refineCaptions } from './api';
+import VideoPlayer from './VideoPlayer';
+import TimelineEditor from './TimelineEditor';
+import { refineCaptionsAPI, exportCaptionsAPI } from './api';
 import './App.css';
 
 function App() {
-  const [captions, setCaptions] = useState([
-    { id: 1, start: 0, end: 2, text: 'Hello world' },
-    { id: 2, start: 3, end: 5, text: 'This is a test' },
-  ]);
-  const [selectedId, setSelectedId] = useState(null);
-  const [echoResponse, setEchoResponse] = useState('');
+  const [captions, setCaptions] = useState([]);
+  const [videoUrl, setVideoUrl] = useState('');
 
-  const handleEcho = async () => {
-    const response = await sendEcho('Hello from frontend!');
-    setEchoResponse(response);
+  const handleAddCaption = () => {
+    const newCaption = { start: 0, end: 2, text: 'New caption', color: '#FFD700' };
+    setCaptions([...captions, newCaption]);
   };
 
-  const handleSave = async () => {
-    const result = await saveCaptions(captions);
-    alert('Captions saved! 🚀');
-    console.log(result);
+  const handleEditCaption = (index) => {
+    const text = prompt('Edit caption:', captions[index].text);
+    if (text !== null) {
+      const updated = [...captions];
+      updated[index].text = text;
+      setCaptions(updated);
+    }
   };
 
-  const handleExport = async () => {
-    await exportCaptions();
-    alert('Captions exported! 🚀');
-  };
-
-  const handleRefine = async () => {
-    const refined = await refineCaptions(captions);
+  const handleRefineCaptions = async () => {
+    const refined = await refineCaptionsAPI(captions);
     setCaptions(refined);
-    alert('Captions refined with AI! 🤖✨');
+  };
+
+  const handleExportCaptions = async () => {
+    await exportCaptionsAPI(captions);
+    alert('Captions exported!');
   };
 
   return (
     <div className="app-container">
-      <h1>Lala AI Studio 🎬🚀</h1>
-      <button onClick={handleEcho}>Send Echo 🚀</button>
-      <button onClick={handleSave}>💾 Save Captions</button>
-      <button onClick={handleExport}>📤 Export Captions</button>
-      <button onClick={handleRefine}>🤖 AI Refine Captions</button>
-      <p>Backend says: {echoResponse}</p>
-
+      <h1>🎬 Lala AI Studio — Phase 14 🚀</h1>
+      <input
+        type="text"
+        placeholder="Video URL"
+        value={videoUrl}
+        onChange={(e) => setVideoUrl(e.target.value)}
+        style={{ width: '300px' }}
+      />
+      <VideoPlayer videoUrl={videoUrl} captions={captions} />
+      <button onClick={handleAddCaption}>➕ Add Caption</button>
+      <button onClick={handleRefineCaptions}>🤖 Refine Captions</button>
+      <button onClick={handleExportCaptions}>💾 Export Captions</button>
       <TimelineEditor
         captions={captions}
         onUpdateCaptions={setCaptions}
-        selectedId={selectedId}
-        setSelectedId={setSelectedId}
+        onEditCaption={handleEditCaption}
       />
     </div>
   );

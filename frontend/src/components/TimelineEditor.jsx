@@ -1,43 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
+import './TimelineEditor.css';
 
-function TimelineEditor({ captions, onUpdateCaptions, selectedId, setSelectedId }) {
+function TimelineEditor({ captions, onUpdateCaptions, onEditCaption }) {
+  const handleDrag = (index, newStart) => {
+    const updated = [...captions];
+    updated[index].start = Math.max(0, newStart);
+    onUpdateCaptions(updated);
+  };
+
+  const handleResize = (index, newEnd) => {
+    const updated = [...captions];
+    updated[index].end = Math.max(updated[index].start + 0.1, newEnd);
+    onUpdateCaptions(updated);
+  };
+
   return (
-    <div style={{ border: '1px solid gray', padding: '10px', height: '100px', overflowX: 'auto', whiteSpace: 'nowrap', position: 'relative' }}>
-      {captions.map((cap) => (
+    <div className="timeline-editor">
+      {captions.map((caption, index) => (
         <div
-          key={cap.id}
-          className={`caption-bar ${selectedId === cap.id ? 'selected' : ''}`}
+          key={index}
+          className="timeline-bar"
           style={{
-            display: 'inline-block',
-            position: 'absolute',
-            left: `${cap.start * 10}px`,
-            width: `${(cap.end - cap.start) * 10}px`,
-            height: '40px',
-            background: selectedId === cap.id ? 'orange' : 'skyblue',
-            border: '1px solid #333',
-            cursor: 'pointer',
-            padding: '2px',
+            left: `${caption.start * 10}px`,
+            width: `${(caption.end - caption.start) * 10}px`,
+            backgroundColor: caption.color || '#4CAF50',
           }}
-          onClick={() => setSelectedId(cap.id)}
+          draggable
+          onDragEnd={(e) =>
+            handleDrag(index, e.clientX / 10)
+          }
+          onDoubleClick={() => onEditCaption(index)}
         >
-          <input
-            type="text"
-            value={cap.text}
-            onChange={(e) =>
-              onUpdateCaptions(
-                captions.map(c =>
-                  c.id === cap.id ? { ...c, text: e.target.value } : c
-                )
-              )
-            }
-            style={{
-              width: '100%',
-              border: 'none',
-              background: 'transparent',
-              color: '#000',
-              fontSize: '12px',
+          {caption.text}
+          <div
+            className="resize-handle"
+            onMouseDown={(e) => {
+              const startX = e.clientX;
+              const onMouseMove = (moveEvent) => {
+                handleResize(index, caption.end + (moveEvent.clientX - startX) / 10);
+              };
+              const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+              };
+              document.addEventListener('mousemove', onMouseMove);
+              document.addEventListener('mouseup', onMouseUp);
             }}
-          />
+          ></div>
         </div>
       ))}
     </div>
