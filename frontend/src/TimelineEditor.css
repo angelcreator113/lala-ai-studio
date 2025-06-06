@@ -1,22 +1,42 @@
 .timeline-editor {
+  margin-top: 20px;
+}
+
+.controls {
+  margin-bottom: 20px;
+}
+
+.video-preview {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.caption-overlay {
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  width: 100%;
+  color: white;
   text-align: center;
-  margin: 2rem;
+  font-size: 24px;
+  text-shadow: 2px 2px 4px #000;
 }
 
-button {
-  margin: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-}
-
-.caption-row {
+.timeline {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0.5rem 0;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.caption-row input {
-  margin: 0 0.5rem;
-  padding: 0.25rem;
+.caption-bar {
+  background-color: #4caf50;
+  padding: 5px;
+  border-radius: 4px;
+  display: flex;
+  gap: 5px;
+  cursor: grab;
+}
+
+.caption-bar input {
+  width: 80px;
 }
