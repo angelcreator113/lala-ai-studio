@@ -1,42 +1,22 @@
 .timeline-editor {
-  padding: 20px;
   text-align: center;
+  margin: 2rem;
 }
 
-.controls {
-  margin-bottom: 20px;
+button {
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
 }
 
-.controls button {
-  margin: 5px;
-  padding: 8px 16px;
-  cursor: pointer;
+.caption-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem 0;
 }
 
-.video-preview {
-  position: relative;
-  display: inline-block;
-  max-width: 90%;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.video-preview video {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.caption-overlay {
-  position: absolute;
-  bottom: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
-  text-align: center;
-  font-size: 24px;
-  color: yellow;
-  text-shadow: 2px 2px black;
-  pointer-events: none;
+.caption-row input {
+  margin: 0 0.5rem;
+  padding: 0.25rem;
 }

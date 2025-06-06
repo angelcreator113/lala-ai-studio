@@ -1,96 +1,101 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./TimelineEditor.css";
 
-function TimelineEditor({ projectData, onProjectDataChange }) {
-  const [videoFile, setVideoFile] = useState(projectData.videoFile);
-  const [captions, setCaptions] = useState(projectData.captions);
+function TimelineEditor() {
+  const [videoFile, setVideoFile] = useState(null);
+  const [captions, setCaptions] = useState([]);
 
   const handleVideoUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const videoURL = URL.createObjectURL(file);
-      setVideoFile(videoURL);
-      onProjectDataChange({ ...projectData, videoFile: videoURL });
+    setVideoFile(e.target.files[0]);
+  };
+
+  const handleGenerateCaptions = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/captions/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ video: "mock-video" }),
+      });
+      const data = await response.json();
+      setCaptions(data.captions);
+    } catch (error) {
+      console.error("Error generating captions:", error);
     }
   };
 
-  const generateCaptions = async () => {
-    const res = await fetch("http://localhost:3000/api/captions/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ video: videoFile }),
-    });
-    const data = await res.json();
-    setCaptions(data.captions);
-    onProjectDataChange({ ...projectData, captions: data.captions });
+  const handleCaptionChange = (index, field, value) => {
+    const updated = [...captions];
+    updated[index][field] = value;
+    setCaptions(updated);
   };
 
-  const applyEffects = async () => {
-    const res = await fetch("http://localhost:3000/api/captions/effects", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ captions }),
-    });
-    const data = await res.json();
-    setCaptions(data.captions);
-    onProjectDataChange({ ...projectData, captions: data.captions });
+  const handleAddCaption = () => {
+    setCaptions([
+      ...captions,
+      { id: Date.now(), start: 0, end: 1, text: "New Caption" },
+    ]);
   };
 
-  const previewCaptions = () => {
-    const video = document.getElementById("video-player");
-    const captionOverlay = document.getElementById("caption-overlay");
-
-    video.ontimeupdate = () => {
-      const currentTime = video.currentTime;
-      const activeCaption = captions.find(
-        (cap) => currentTime >= cap.start && currentTime <= cap.end
-      );
-      captionOverlay.innerText = activeCaption ? activeCaption.text : "";
-    };
+  const handleDeleteCaption = (index) => {
+    const updated = [...captions];
+    updated.splice(index, 1);
+    setCaptions(updated);
   };
 
-  const saveProject = async () => {
-    await fetch("http://localhost:3000/api/captions/save", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ video: videoFile, captions }),
-    });
-    alert("Project saved! ✅");
+  const handleSaveProject = () => {
+    localStorage.setItem("lala_project", JSON.stringify(captions));
+    alert("Project saved!");
   };
 
-  const exportCaptions = async () => {
-    const res = await fetch("http://localhost:3000/api/captions/export");
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "captions.json";
-    a.click();
+  const handleLoadProject = () => {
+    const saved = localStorage.getItem("lala_project");
+    if (saved) {
+      setCaptions(JSON.parse(saved));
+    } else {
+      alert("No saved project found.");
+    }
   };
 
   return (
     <div className="timeline-editor">
-      <div className="controls">
-        <input type="file" accept="video/*" onChange={handleVideoUpload} />
-        <button onClick={generateCaptions}>AI Generate Captions</button>
-        <button onClick={applyEffects}>AI Effects ✨</button>
-        <button onClick={previewCaptions}>Preview Captions</button>
-        <button onClick={saveProject}>Save Project</button>
-        <button onClick={exportCaptions}>Export Captions</button>
-      </div>
+      <h1>🎬 Lala AI Studio 🚀</h1>
 
+      <h2>🎞️ Timeline Editor</h2>
+
+      <input type="file" onChange={handleVideoUpload} />
       {videoFile && (
-        <div className="video-preview">
-          <video
-            id="video-player"
-            src={videoFile}
-            controls
-            width="600"
-            onPlay={previewCaptions}
-          ></video>
-          <div id="caption-overlay" className="caption-overlay"></div>
-        </div>
+        <video controls src={URL.createObjectURL(videoFile)} style={{ maxWidth: "80%", margin: "1rem 0" }} />
       )}
+
+      <button onClick={handleGenerateCaptions}>🧠 Generate AI Captions</button>
+      <button onClick={handleSaveProject}>💾 Save Project</button>
+      <button onClick={handleLoadProject}>📂 Load Project</button>
+
+      <h3>📝 Captions:</h3>
+      <button onClick={handleAddCaption}>➕ Add Caption</button>
+
+      {captions.map((caption, index) => (
+        <div key={caption.id} className="caption-row">
+          <input
+            type="number"
+            value={caption.start}
+            onChange={(e) => handleCaptionChange(index, "start", e.target.value)}
+            step="0.1"
+          />
+          <input
+            type="number"
+            value={caption.end}
+            onChange={(e) => handleCaptionChange(index, "end", e.target.value)}
+            step="0.1"
+          />
+          <input
+            type="text"
+            value={caption.text}
+            onChange={(e) => handleCaptionChange(index, "text", e.target.value)}
+          />
+          <button onClick={() => handleDeleteCaption(index)}>❌ Delete</button>
+        </div>
+      ))}
     </div>
   );
 }
