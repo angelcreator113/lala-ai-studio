@@ -1,64 +1,42 @@
-/* TimelineEditor.css */
-
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.timeline-editor {
   padding: 20px;
-  max-width: 800px;
-  margin: 0 auto;
+  text-align: center;
 }
 
-h1 {
+.controls {
   margin-bottom: 20px;
 }
 
-input[type="file"] {
-  margin-bottom: 20px;
+.controls button {
+  margin: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
 }
 
-video {
-  max-width: 100%;
-  max-height: 400px;
-  margin-bottom: 20px;
+.video-preview {
+  position: relative;
+  display: inline-block;
+  max-width: 90%;
   border: 2px solid #ccc;
   border-radius: 8px;
+  overflow: hidden;
 }
 
-.button-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-button {
-  padding: 10px 15px;
-  font-size: 14px;
-  border: none;
-  border-radius: 5px;
-  background-color: #6b46c1;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #553c9a;
-}
-
-.captions-list {
-  text-align: left;
+.video-preview video {
   width: 100%;
+  height: auto;
+  display: block;
 }
 
-.captions-list ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.captions-list li {
-  margin-bottom: 8px;
-  padding: 5px;
-  background-color: #f3f3f3;
-  border-radius: 5px;
+.caption-overlay {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  text-align: center;
+  font-size: 24px;
+  color: yellow;
+  text-shadow: 2px 2px black;
+  pointer-events: none;
 }

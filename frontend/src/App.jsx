@@ -10,7 +10,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <h1>Lala AI Studio 🎬🚀</h1>
+      <h1>Lala AI Studio 🎬 Phase 19 🚀</h1>
       <TimelineEditor
         projectData={projectData}
         onProjectDataChange={setProjectData}
