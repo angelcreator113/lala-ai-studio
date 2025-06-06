@@ -1,34 +1,35 @@
-.timeline-editor {
-  position: relative;
-  height: 100px;
+.timeline-container {
+  margin: 20px 0;
+  padding: 10px;
   background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  margin-top: 20px;
-  overflow-x: scroll;
-  white-space: nowrap;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  overflow-x: auto;
 }
 
-.timeline-bar {
+.timeline {
+  position: relative;
+  height: 60px;
+  background-color: #fff;
+  border: 1px solid #aaa;
+}
+
+.timeline-caption {
   position: absolute;
+  top: 10px;
   height: 40px;
-  top: 30px;
-  border-radius: 4px;
+  background-color: #4caf50;
   color: white;
+  padding: 5px;
+  border-radius: 4px;
+  cursor: grab;
+  user-select: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: move;
-  padding: 0 10px;
-  font-size: 14px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: background-color 0.2s;
 }
 
-.resize-handle {
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 8px;
-  height: 100%;
-  cursor: ew-resize;
-  background-color: rgba(255, 255, 255, 0.5);
+.timeline-caption:hover {
+  background-color: #45a049;
 }
