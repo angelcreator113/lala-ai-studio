@@ -3,7 +3,6 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import healthRouter from './routes/health.js';
 import fs from 'fs';
-import path from 'path';
 
 dotenv.config();
 
@@ -13,42 +12,35 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Health route
 app.use('/api/health', healthRouter);
 
-// Echo route
-app.post('/api/echo', (req, res) => {
-  const { message } = req.body;
-  res.json({ response: `Echo: ${message}` });
-});
-
-// Save captions
-app.post('/api/save-captions', (req, res) => {
-  const { captions } = req.body;
-  const filePath = path.join(process.cwd(), 'backend', 'exports', 'captions.json');
-  fs.writeFileSync(filePath, JSON.stringify(captions, null, 2));
-  res.json({ success: true, path: filePath });
-});
-
-// Export captions
-app.get('/api/export-captions', (req, res) => {
-  const filePath = path.join(process.cwd(), 'backend', 'exports', 'captions.json');
-  res.download(filePath);
-});
-
-// Phase 13 — AI Refine Captions
-app.post('/api/ai-refine', (req, res) => {
-  const { captions } = req.body;
-  console.log('AI Refine requested:', captions);
-
-  // Simulate AI refinement
-  const refined = captions.map(cap => ({
+app.post('/api/refine-captions', (req, res) => {
+  const captions = req.body.captions || [];
+  const refined = captions.map((cap) => ({
     ...cap,
-    text: cap.text + ' (refined ✨)',
+    text: cap.text.trim().replace(/\s+/g, ' '), // simple refine
   }));
-
   res.json({ captions: refined });
 });
+
+app.post('/api/export-captions', (req, res) => {
+  const captions = req.body.captions || [];
+  const srt = captions
+    .map(
+      (cap, i) =>
+        `${i + 1}\n${formatTime(cap.start)} --> ${formatTime(cap.end)}\n${cap.text}\n`
+    )
+    .join('\n');
+  const filePath = './exports/captions.srt';
+  fs.writeFileSync(filePath, srt);
+  res.json({ message: 'Captions exported', filePath });
+});
+
+function formatTime(seconds) {
+  const date = new Date(null);
+  date.setSeconds(seconds);
+  return date.toISOString().substr(11, 8) + ',000';
+}
 
 app.get('/', (req, res) => {
   res.send('Lala AI Studio Backend is running 🚀✨');
