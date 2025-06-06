@@ -1,0 +1,28 @@
+.timeline-editor {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.generate-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #7a5cf0;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.generate-button:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 8px 0;
+}

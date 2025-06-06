@@ -1,86 +1,87 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./TimelineEditor.css";
-import {
-  alignCaptions,
-  splitMergeCaptions,
-  importCaptions,
-} from "./api";
 
 function TimelineEditor({ projectData, onProjectDataChange }) {
-  const [undoStack, setUndoStack] = useState([]);
-  const [redoStack, setRedoStack] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleAlignClick = async () => {
-    const newCaptions = await alignCaptions(projectData);
-    saveState();
-    onProjectDataChange({ ...projectData, captions: newCaptions });
+  const handleVideoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      onProjectDataChange({
+        ...projectData,
+        videoFile: file.name,
+      });
+    }
   };
 
-  const handleSplitMergeClick = async () => {
-    const newCaptions = await splitMergeCaptions(projectData);
-    saveState();
-    onProjectDataChange({ ...projectData, captions: newCaptions });
-  };
+  const handleGenerateCaptions = async () => {
+    if (!projectData.videoFile) {
+      alert("Please upload a video first!");
+      return;
+    }
 
-  const handleImport = async (file) => {
-    const importedCaptions = await importCaptions(file);
-    saveState();
-    onProjectDataChange({ ...projectData, captions: importedCaptions });
-  };
+    setLoading(true);
 
-  const saveState = () => {
-    setUndoStack([...undoStack, projectData]);
-    setRedoStack([]);
-  };
+    try {
+      const response = await fetch("http://localhost:3000/api/captions/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ videoFile: projectData.videoFile }),
+      });
 
-  const handleUndo = () => {
-    if (undoStack.length === 0) return;
-    const prevState = undoStack.pop();
-    setRedoStack([projectData, ...redoStack]);
-    onProjectDataChange(prevState);
-    setUndoStack([...undoStack]);
-  };
+      const data = await response.json();
 
-  const handleRedo = () => {
-    if (redoStack.length === 0) return;
-    const nextState = redoStack.shift();
-    setUndoStack([...undoStack, projectData]);
-    onProjectDataChange(nextState);
-    setRedoStack([...redoStack]);
+      if (response.ok) {
+        onProjectDataChange({
+          ...projectData,
+          captions: data.captions,
+        });
+      } else {
+        alert("Failed to generate captions.");
+        console.error("API error:", data);
+      }
+    } catch (error) {
+      console.error("Error generating captions:", error);
+      alert("Error generating captions.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="timeline-editor">
-      <h2>🕒 Timeline Editor</h2>
-      <div className="editor-toolbar">
-        <button onClick={handleAlignClick}>🤖 AI Align Captions</button>
-        <button onClick={handleSplitMergeClick}>✨ AI Split/Merge</button>
-        <input
-          type="file"
-          accept=".srt"
-          onChange={(e) => handleImport(e.target.files[0])}
-        />
-        <button onClick={handleUndo} disabled={undoStack.length === 0}>
-          ↩️ Undo
-        </button>
-        <button onClick={handleRedo} disabled={redoStack.length === 0}>
-          ↪️ Redo
+      <h2>🎞️ Timeline Editor</h2>
+
+      <div>
+        <label>
+          Upload Video:
+          <input type="file" accept="video/*" onChange={handleVideoUpload} />
+        </label>
+      </div>
+
+      <div style={{ marginTop: "20px" }}>
+        <button
+          onClick={handleGenerateCaptions}
+          disabled={loading}
+          className="generate-button"
+        >
+          🤖 {loading ? "Generating..." : "Generate AI Captions"}
         </button>
       </div>
 
-      <div className="timeline-bars">
-        {projectData.captions.map((cap, index) => (
-          <div
-            key={index}
-            className="timeline-bar"
-            style={{
-              left: `${cap.start * 10}px`,
-              width: `${(cap.end - cap.start) * 10}px`,
-            }}
-          >
-            {cap.text}
-          </div>
-        ))}
+      <div style={{ marginTop: "20px" }}>
+        <h3>🎬 Captions:</h3>
+        {projectData.captions.length === 0 ? (
+          <p>No captions yet.</p>
+        ) : (
+          <ul>
+            {projectData.captions.map((caption, index) => (
+              <li key={index}>
+                [{caption.start}s - {caption.end}s]: {caption.text}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

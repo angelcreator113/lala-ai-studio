@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import TimelineEditor from "./TimelineEditor";
-import AssistantPanel from "./components/AssistantPanel";
 import "./App.css";
 
 function App() {
@@ -9,20 +8,12 @@ function App() {
     captions: [],
   });
 
-  const handleProjectDataChange = (newData) => {
-    setProjectData(newData);
-  };
-
   return (
-    <div className="app-container">
-      <h1>🎬 Lala AI Studio — Phase 17 🚀</h1>
-      <AssistantPanel
-        projectData={projectData}
-        onProjectDataChange={handleProjectDataChange}
-      />
+    <div className="App">
+      <h1>🎬 Lala AI Studio 🚀</h1>
       <TimelineEditor
         projectData={projectData}
-        onProjectDataChange={handleProjectDataChange}
+        onProjectDataChange={setProjectData}
       />
     </div>
   );
