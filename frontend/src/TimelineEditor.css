@@ -1,42 +1,39 @@
 .timeline-editor {
-  max-width: 800px;
-  margin: 0 auto;
+  text-align: center;
   padding: 20px;
-  font-family: Arial, sans-serif;
+  background: #f9fbfd;
+  font-family: sans-serif;
 }
 
-.btn-primary, .btn-secondary {
+.video-preview video {
+  width: 480px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.controls {
+  margin: 10px 0;
+}
+
+.controls button {
   padding: 8px 16px;
-  margin: 10px 5px;
+  font-size: 16px;
   cursor: pointer;
-  border: none;
-  border-radius: 4px;
 }
 
-.btn-primary {
-  background-color: #6c5ce7;
-  color: white;
+.timeline {
+  width: 480px;
+  height: 10px;
+  background: #ddd;
+  border-radius: 5px;
+  margin: 10px auto;
+  position: relative;
+  cursor: pointer;
 }
 
-.btn-secondary {
-  background-color: #00b894;
-  color: white;
-}
-
-.captions-list {
-  list-style: none;
-  padding: 0;
-}
-
-.caption-item {
-  background: #f1f1f1;
-  margin: 8px 0;
-  padding: 10px;
-  border-radius: 4px;
-  cursor: grab;
-}
-
-.caption-item:active {
-  cursor: grabbing;
-  background: #ffeaa7;
+.timeline-progress {
+  height: 100%;
+  background: #7b5dff;
+  border-radius: 5px;
+  transition: width 0.1s linear;
 }

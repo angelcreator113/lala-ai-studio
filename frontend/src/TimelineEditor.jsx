@@ -1,98 +1,99 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./TimelineEditor.css";
 
 function TimelineEditor() {
   const [videoFile, setVideoFile] = useState(null);
   const [captions, setCaptions] = useState([]);
-  const [draggedIndex, setDraggedIndex] = useState(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  const handleVideoUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setVideoFile(URL.createObjectURL(file));
+  const videoRef = useRef(null);
+
+  // Handle video upload
+  const handleVideoUpload = (e) => {
+    const file = e.target.files[0];
+    setVideoFile(file);
+  };
+
+  // Play/Pause toggle
+  const handlePlayPause = () => {
+    const video = videoRef.current;
+    if (isPlaying) {
+      video.pause();
+    } else {
+      video.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
+  // Seek to time
+  const handleTimelineClick = (e) => {
+    const timeline = e.target;
+    const rect = timeline.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const newTime = (clickX / rect.width) * videoRef.current.duration;
+    videoRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
+  };
+
+  // Video time update
+  const handleTimeUpdate = () => {
+    setCurrentTime(videoRef.current.currentTime);
+  };
+
+  // Spacebar keyboard shortcut
+  const handleKeyDown = (e) => {
+    if (e.code === "Space") {
+      e.preventDefault();
+      handlePlayPause();
     }
   };
 
-  const generateAICaptions = async () => {
-    try {
-      const response = await fetch("/api/captions/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ video: "mock" }), // Replace with actual payload if needed
-      });
-      const data = await response.json();
-      setCaptions(data.captions);
-    } catch (error) {
-      console.error("Error generating captions:", error);
-      alert("Failed to generate captions.");
-    }
-  };
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isPlaying]);
 
-  const handleDragStart = (index) => {
-    setDraggedIndex(index);
-  };
-
-  const handleDragOver = (index) => {
-    if (draggedIndex === null || draggedIndex === index) return;
-    const updatedCaptions = [...captions];
-    const [draggedItem] = updatedCaptions.splice(draggedIndex, 1);
-    updatedCaptions.splice(index, 0, draggedItem);
-    setDraggedIndex(index);
-    setCaptions(updatedCaptions);
-  };
-
-  const saveProject = () => {
-    const projectData = {
-      captions,
-      videoFile,
-    };
-    console.log("Saving project:", projectData);
-    alert("Project saved (mock) 🚀");
-  };
-
+  // Render
   return (
     <div className="timeline-editor">
       <h1>🎬 Lala AI Studio 🚀</h1>
 
-      <div>
-        <label>Upload Video: </label>
-        <input type="file" accept="video/*" onChange={handleVideoUpload} />
-      </div>
+      {/* Video upload */}
+      <input type="file" accept="video/*" onChange={handleVideoUpload} />
 
+      {/* Video preview */}
       {videoFile && (
-        <video
-          src={videoFile}
-          controls
-          width="600"
-          style={{ margin: "20px 0" }}
-        />
+        <div className="video-preview">
+          <video
+            ref={videoRef}
+            src={URL.createObjectURL(videoFile)}
+            controls={false}
+            onTimeUpdate={handleTimeUpdate}
+          ></video>
+
+          {/* Playback controls */}
+          <div className="controls">
+            <button onClick={handlePlayPause}>
+              {isPlaying ? "⏸ Pause" : "▶️ Play"}
+            </button>
+          </div>
+
+          {/* Timeline */}
+          <div className="timeline" onClick={handleTimelineClick}>
+            <div
+              className="timeline-progress"
+              style={{
+                width: `${
+                  videoRef.current
+                    ? (currentTime / videoRef.current.duration) * 100
+                    : 0
+                }%`,
+              }}
+            ></div>
+          </div>
+        </div>
       )}
-
-      <button onClick={generateAICaptions} className="btn-primary">
-        🤖 Generate AI Captions
-      </button>
-
-      <h3>📝 Captions (Drag to Reorder):</h3>
-      <ul className="captions-list">
-        {captions.map((caption, index) => (
-          <li
-            key={index}
-            draggable
-            onDragStart={() => handleDragStart(index)}
-            onDragOver={(e) => {
-              e.preventDefault();
-              handleDragOver(index);
-            }}
-            className="caption-item"
-          >
-            <strong>[{caption.start} - {caption.end}]</strong> {caption.text}
-          </li>
-        ))}
-      </ul>
-
-      <button onClick={saveProject} className="btn-secondary">
-        💾 Save Project
-      </button>
     </div>
   );
 }
