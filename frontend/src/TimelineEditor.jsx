@@ -3,96 +3,75 @@ import "./TimelineEditor.css";
 
 function TimelineEditor() {
   const [videoFile, setVideoFile] = useState(null);
-  const [captions, setCaptions] = useState([]);
+  const [captions, setCaptions] = useState([
+    { id: 1, start: 0, end: 2, text: "Hello world!" },
+    { id: 2, start: 2, end: 4, text: "This is a test caption." },
+  ]);
   const [currentTime, setCurrentTime] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   const videoRef = useRef(null);
 
-  // Handle video upload
   const handleVideoUpload = (e) => {
-    const file = e.target.files[0];
-    setVideoFile(file);
+    setVideoFile(URL.createObjectURL(e.target.files[0]));
   };
 
-  // Play/Pause toggle
-  const handlePlayPause = () => {
-    const video = videoRef.current;
-    if (isPlaying) {
-      video.pause();
-    } else {
-      video.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  // Seek to time
-  const handleTimelineClick = (e) => {
-    const timeline = e.target;
-    const rect = timeline.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const newTime = (clickX / rect.width) * videoRef.current.duration;
-    videoRef.current.currentTime = newTime;
-    setCurrentTime(newTime);
-  };
-
-  // Video time update
   const handleTimeUpdate = () => {
     setCurrentTime(videoRef.current.currentTime);
   };
 
-  // Spacebar keyboard shortcut
-  const handleKeyDown = (e) => {
-    if (e.code === "Space") {
-      e.preventDefault();
-      handlePlayPause();
-    }
+  const handleCaptionDrag = (id, newStart) => {
+    setCaptions((prev) =>
+      prev.map((cap) =>
+        cap.id === id ? { ...cap, start: newStart, end: newStart + (cap.end - cap.start) } : cap
+      )
+    );
   };
 
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isPlaying]);
+  const handleSeekToCaption = (time) => {
+    videoRef.current.currentTime = time;
+    videoRef.current.play();
+  };
 
-  // Render
   return (
     <div className="timeline-editor">
       <h1>🎬 Lala AI Studio 🚀</h1>
 
-      {/* Video upload */}
       <input type="file" accept="video/*" onChange={handleVideoUpload} />
-
-      {/* Video preview */}
       {videoFile && (
-        <div className="video-preview">
+        <>
           <video
+            src={videoFile}
+            controls
             ref={videoRef}
-            src={URL.createObjectURL(videoFile)}
-            controls={false}
             onTimeUpdate={handleTimeUpdate}
-          ></video>
+            style={{ width: "600px", marginTop: "1rem" }}
+          />
 
-          {/* Playback controls */}
-          <div className="controls">
-            <button onClick={handlePlayPause}>
-              {isPlaying ? "⏸ Pause" : "▶️ Play"}
-            </button>
-          </div>
+          <div className="timeline">
+            {captions.map((cap) => {
+              const width = (cap.end - cap.start) * 50; // scale for demo
+              const left = cap.start * 50;
+              const isActive = currentTime >= cap.start && currentTime <= cap.end;
 
-          {/* Timeline */}
-          <div className="timeline" onClick={handleTimelineClick}>
-            <div
-              className="timeline-progress"
-              style={{
-                width: `${
-                  videoRef.current
-                    ? (currentTime / videoRef.current.duration) * 100
-                    : 0
-                }%`,
-              }}
-            ></div>
+              return (
+                <div
+                  key={cap.id}
+                  className={`caption-block ${isActive ? "active" : ""}`}
+                  style={{ left, width }}
+                  draggable
+                  onDragEnd={(e) => {
+                    const newLeft = e.clientX - 100; // adjust this offset as needed
+                    const newStart = Math.max(0, newLeft / 50);
+                    handleCaptionDrag(cap.id, newStart);
+                  }}
+                  onClick={() => handleSeekToCaption(cap.start)}
+                >
+                  {cap.text}
+                </div>
+              );
+            })}
           </div>
-        </div>
+        </>
       )}
     </div>
   );
