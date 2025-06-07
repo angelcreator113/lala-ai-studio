@@ -1,8 +1,13 @@
 // src/App.jsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TimelineEditor from "./TimelineEditor";
-import { saveProject, loadProject } from "./api";
+import {
+  saveProject,
+  loadProject,
+  listProjectVersions,
+  loadProjectVersion,
+} from "./api";
 import "./App.css";
 
 function App() {
@@ -11,11 +16,14 @@ function App() {
     captions: [],
   });
   const [loadedFileName, setLoadedFileName] = useState("");
+  const [versions, setVersions] = useState([]);
+  const [selectedVersion, setSelectedVersion] = useState("");
 
   const handleSave = async () => {
     try {
       await saveProject(projectData);
       alert("✅ Project saved!");
+      await fetchVersions(); // Refresh version list
     } catch (error) {
       alert("❌ Failed to save project.");
     }
@@ -32,16 +40,65 @@ function App() {
     }
   };
 
+  const fetchVersions = async () => {
+    try {
+      const result = await listProjectVersions();
+      setVersions(result.versions);
+    } catch (error) {
+      console.error("Failed to fetch versions:", error);
+    }
+  };
+
+  const handleLoadVersion = async () => {
+    if (!selectedVersion) return;
+    try {
+      const loaded = await loadProjectVersion(selectedVersion);
+      setProjectData(loaded.data);
+      setLoadedFileName(`Version: ${selectedVersion}`);
+      alert(`✅ Loaded version: ${selectedVersion}`);
+    } catch (error) {
+      alert("❌ Failed to load version.");
+    }
+  };
+
+  useEffect(() => {
+    fetchVersions();
+  }, []);
+
   return (
     <div className="App">
-      <h1>🎬 Lala AI Studio — Project Save + Load</h1>
+      <h1>🎬 Lala AI Studio — Phase 26 Project Save + Load + Versions 🚀</h1>
+
       <div style={{ marginBottom: "1rem" }}>
         <button onClick={handleSave}>💾 Save Project</button>
         <button onClick={handleLoad} style={{ marginLeft: "10px" }}>
-          📂 Load Project
+          📂 Load Latest Project
         </button>
-        {loadedFileName && <p>Loaded: {loadedFileName}</p>}
       </div>
+
+      <div style={{ marginBottom: "1rem" }}>
+        <label>Select Version:</label>{" "}
+        <select
+          value={selectedVersion}
+          onChange={(e) => setSelectedVersion(e.target.value)}
+        >
+          <option value="">-- Select a version --</option>
+          {versions.map((v) => (
+            <option key={v.file} value={v.file}>
+              {v.file}
+            </option>
+          ))}
+        </select>
+        <button
+          onClick={handleLoadVersion}
+          disabled={!selectedVersion}
+          style={{ marginLeft: "10px" }}
+        >
+          ⏪ Load Selected Version
+        </button>
+      </div>
+
+      {loadedFileName && <p>Loaded: {loadedFileName}</p>}
 
       <TimelineEditor
         projectData={projectData}
