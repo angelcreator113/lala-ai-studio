@@ -1,42 +1,42 @@
 .timeline-editor {
-  margin-top: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
-.controls {
-  margin-bottom: 20px;
-}
-
-.video-preview {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.caption-overlay {
-  position: absolute;
-  bottom: 40px;
-  left: 0;
-  width: 100%;
-  color: white;
-  text-align: center;
-  font-size: 24px;
-  text-shadow: 2px 2px 4px #000;
-}
-
-.timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.caption-bar {
-  background-color: #4caf50;
-  padding: 5px;
+.btn-primary, .btn-secondary {
+  padding: 8px 16px;
+  margin: 10px 5px;
+  cursor: pointer;
+  border: none;
   border-radius: 4px;
-  display: flex;
-  gap: 5px;
+}
+
+.btn-primary {
+  background-color: #6c5ce7;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #00b894;
+  color: white;
+}
+
+.captions-list {
+  list-style: none;
+  padding: 0;
+}
+
+.caption-item {
+  background: #f1f1f1;
+  margin: 8px 0;
+  padding: 10px;
+  border-radius: 4px;
   cursor: grab;
 }
 
-.caption-bar input {
-  width: 80px;
+.caption-item:active {
+  cursor: grabbing;
+  background: #ffeaa7;
 }
