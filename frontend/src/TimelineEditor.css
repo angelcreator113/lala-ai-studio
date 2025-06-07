@@ -9,6 +9,23 @@
   margin-top: 1rem;
 }
 
+.markers-track {
+  height: 20px;
+  background: #111;
+  position: relative;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.marker {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  background-color: #f39c12;
+  opacity: 0.9;
+}
+
 .timeline-track {
   position: relative;
   height: 50px;
@@ -43,18 +60,4 @@
 
 .caption-block.active {
   background-color: #2ecc71;
-}
-
-.marker {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  width: 2px;
-  background-color: #f39c12;
-  opacity: 0.8;
-}
-
-.marker.active {
-  background-color: #e74c3c;
-  opacity: 1;
 }

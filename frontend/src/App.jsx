@@ -14,7 +14,24 @@ function App() {
   const [projectData, setProjectData] = useState({
     videoFile: "",
     captions: [],
+    markers: [
+      { time: 2 },
+      { time: 5 },
+      { time: 7.5 },
+    ],
+    tracks: [
+      {
+        id: 1,
+        name: "Track 1",
+        type: "captions",
+        items: [
+          { text: "Hello", start: 1, end: 3 },
+          { text: "World", start: 4, end: 6 },
+        ],
+      },
+    ],
   });
+
   const [loadedFileName, setLoadedFileName] = useState("");
   const [versions, setVersions] = useState([]);
   const [selectedVersion, setSelectedVersion] = useState("");
@@ -67,7 +84,9 @@ function App() {
 
   return (
     <div className="App">
-      <h1>🎬 Lala AI Studio — Phase 26 Project Save + Load + Versions 🚀</h1>
+      <h1>
+        🎬 Lala AI Studio — Phase 30 Save + Load + Markers + Tracks 🚀
+      </h1>
 
       <div style={{ marginBottom: "1rem" }}>
         <button onClick={handleSave}>💾 Save Project</button>
