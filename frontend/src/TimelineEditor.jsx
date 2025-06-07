@@ -28,13 +28,23 @@ function TimelineEditor({ projectData, onProjectDataChange }) {
 
   return (
     <div className="timeline-editor">
-      <h2>🕒 Timeline Editor + Tracks</h2>
+      <h2>🕒 Timeline Editor — Phase 30 🚀</h2>
+
       <input type="file" accept="video/*" onChange={handleVideoChange} />
+
       {projectData.videoFile && (
         <video
           src={projectData.videoFile}
           controls
-          style={{ width: "100%", marginTop: "10px" }}
+          style={{
+            width: "100%",
+            maxWidth: "720px",
+            maxHeight: "400px", // limit tall videos
+            objectFit: "contain",
+            marginTop: "10px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
+          }}
         />
       )}
 
@@ -43,6 +53,18 @@ function TimelineEditor({ projectData, onProjectDataChange }) {
       </button>
 
       <div className="timeline-layers">
+        {/* Markers Track */}
+        <div className="markers-track">
+          {projectData.markers.map((marker, index) => (
+            <div
+              key={index}
+              className="marker"
+              style={{ left: `${marker.time * 50}px` }}
+            />
+          ))}
+        </div>
+
+        {/* Tracks */}
         {projectData.tracks.map((track) => (
           <div key={track.id} className="timeline-track">
             <div className="track-header">{track.name}</div>
