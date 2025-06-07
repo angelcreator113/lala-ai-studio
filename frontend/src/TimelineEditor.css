@@ -5,15 +5,26 @@
   text-align: center;
 }
 
+.timeline-layers {
+  margin-top: 1rem;
+}
+
 .timeline-track {
   position: relative;
   height: 50px;
   background: linear-gradient(to right, #222, #333);
   border-radius: 6px;
   overflow: hidden;
-  margin-top: 1rem;
   margin-bottom: 1rem;
   border: 1px solid #555;
+}
+
+.track-header {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  font-size: 14px;
+  color: #ccc;
 }
 
 .caption-block {
