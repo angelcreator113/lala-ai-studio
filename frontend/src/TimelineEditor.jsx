@@ -1,134 +1,98 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./TimelineEditor.css";
 
-function TimelineEditor({ projectData, onProjectDataChange }) {
-  const [videoFile, setVideoFile] = useState("");
-  const [draggingCaptionIndex, setDraggingCaptionIndex] = useState(null);
+function TimelineEditor() {
+  const [videoFile, setVideoFile] = useState(null);
+  const [captions, setCaptions] = useState([]);
+  const [draggedIndex, setDraggedIndex] = useState(null);
 
-  const handleVideoUpload = (e) => {
-    const file = e.target.files[0];
+  const handleVideoUpload = (event) => {
+    const file = event.target.files[0];
     if (file) {
-      const url = URL.createObjectURL(file);
-      onProjectDataChange({ ...projectData, videoUrl: url });
+      setVideoFile(URL.createObjectURL(file));
     }
   };
 
-  const handleGenerateCaptions = async () => {
-    const response = await fetch("http://localhost:3000/api/captions/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({}),
-    });
-    const data = await response.json();
-    onProjectDataChange({ ...projectData, captions: data.captions });
-  };
-
-  const handleImproveCaptions = async () => {
-    const response = await fetch("http://localhost:3000/api/captions/improve", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ captions: projectData.captions }),
-    });
-    const data = await response.json();
-    onProjectDataChange({ ...projectData, captions: data.captions });
-  };
-
-  const handleSaveProject = () => {
-    localStorage.setItem("lala_project", JSON.stringify(projectData));
-    alert("Project saved!");
-  };
-
-  const handleLoadProject = () => {
-    const saved = localStorage.getItem("lala_project");
-    if (saved) {
-      onProjectDataChange(JSON.parse(saved));
-    } else {
-      alert("No saved project found.");
+  const generateAICaptions = async () => {
+    try {
+      const response = await fetch("/api/captions/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ video: "mock" }), // Replace with actual payload if needed
+      });
+      const data = await response.json();
+      setCaptions(data.captions);
+    } catch (error) {
+      console.error("Error generating captions:", error);
+      alert("Failed to generate captions.");
     }
   };
 
   const handleDragStart = (index) => {
-    setDraggingCaptionIndex(index);
+    setDraggedIndex(index);
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
+  const handleDragOver = (index) => {
+    if (draggedIndex === null || draggedIndex === index) return;
+    const updatedCaptions = [...captions];
+    const [draggedItem] = updatedCaptions.splice(draggedIndex, 1);
+    updatedCaptions.splice(index, 0, draggedItem);
+    setDraggedIndex(index);
+    setCaptions(updatedCaptions);
   };
 
-  const handleDrop = (index) => {
-    if (draggingCaptionIndex === null) return;
-    const updatedCaptions = [...projectData.captions];
-    const [movedCaption] = updatedCaptions.splice(draggingCaptionIndex, 1);
-    updatedCaptions.splice(index, 0, movedCaption);
-    onProjectDataChange({ ...projectData, captions: updatedCaptions });
-    setDraggingCaptionIndex(null);
+  const saveProject = () => {
+    const projectData = {
+      captions,
+      videoFile,
+    };
+    console.log("Saving project:", projectData);
+    alert("Project saved (mock) 🚀");
   };
 
   return (
     <div className="timeline-editor">
-      <div className="controls">
+      <h1>🎬 Lala AI Studio 🚀</h1>
+
+      <div>
+        <label>Upload Video: </label>
         <input type="file" accept="video/*" onChange={handleVideoUpload} />
-        <button onClick={handleGenerateCaptions}>Generate AI Captions 🚀</button>
-        <button onClick={handleImproveCaptions}>Improve AI Captions ✨</button>
-        <button onClick={handleSaveProject}>Save Project 💾</button>
-        <button onClick={handleLoadProject}>Load Project 📂</button>
       </div>
 
-      {projectData.videoUrl && (
-        <div className="video-preview">
-          <video src={projectData.videoUrl} controls width="640" />
-          <div className="caption-overlay">
-            {projectData.captions.map((cap, index) => (
-              <div key={index} className="caption-text">
-                {cap.text}
-              </div>
-            ))}
-          </div>
-        </div>
+      {videoFile && (
+        <video
+          src={videoFile}
+          controls
+          width="600"
+          style={{ margin: "20px 0" }}
+        />
       )}
 
-      <div className="timeline">
-        {projectData.captions.map((cap, index) => (
-          <div
+      <button onClick={generateAICaptions} className="btn-primary">
+        🤖 Generate AI Captions
+      </button>
+
+      <h3>📝 Captions (Drag to Reorder):</h3>
+      <ul className="captions-list">
+        {captions.map((caption, index) => (
+          <li
             key={index}
-            className="caption-bar"
             draggable
             onDragStart={() => handleDragStart(index)}
-            onDragOver={handleDragOver}
-            onDrop={() => handleDrop(index)}
+            onDragOver={(e) => {
+              e.preventDefault();
+              handleDragOver(index);
+            }}
+            className="caption-item"
           >
-            <input
-              type="number"
-              value={cap.start}
-              step="0.1"
-              onChange={(e) => {
-                const updated = [...projectData.captions];
-                updated[index].start = parseFloat(e.target.value);
-                onProjectDataChange({ ...projectData, captions: updated });
-              }}
-            />
-            <input
-              type="number"
-              value={cap.end}
-              step="0.1"
-              onChange={(e) => {
-                const updated = [...projectData.captions];
-                updated[index].end = parseFloat(e.target.value);
-                onProjectDataChange({ ...projectData, captions: updated });
-              }}
-            />
-            <input
-              type="text"
-              value={cap.text}
-              onChange={(e) => {
-                const updated = [...projectData.captions];
-                updated[index].text = e.target.value;
-                onProjectDataChange({ ...projectData, captions: updated });
-              }}
-            />
-          </div>
+            <strong>[{caption.start} - {caption.end}]</strong> {caption.text}
+          </li>
         ))}
-      </div>
+      </ul>
+
+      <button onClick={saveProject} className="btn-secondary">
+        💾 Save Project
+      </button>
     </div>
   );
 }
