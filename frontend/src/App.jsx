@@ -4,13 +4,13 @@ import "./App.css";
 
 function App() {
   const [projectData, setProjectData] = useState({
-    videoFile: "",
+    videoUrl: "",
     captions: [],
   });
 
   return (
     <div className="app-container">
-      <h1>Lala AI Studio 🎬 Phase 19 🚀</h1>
+      <h1>🎬 Lala AI Studio — Phase 21 🚀</h1>
       <TimelineEditor
         projectData={projectData}
         onProjectDataChange={setProjectData}
