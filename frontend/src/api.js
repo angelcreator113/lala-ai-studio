@@ -1,15 +1,31 @@
-const API_BASE = "http://localhost:3000/api";
+// src/api.js
 
-export async function saveProject(projectData) {
-  const res = await fetch(`${API_BASE}/project/save`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(projectData),
-  });
-  return await res.json();
-}
+export const saveProject = async (projectData) => {
+  try {
+    const response = await fetch("/api/project/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ projectData }),
+    });
 
-export async function loadProject() {
-  const res = await fetch(`${API_BASE}/project/load`);
-  return await res.json();
-}
+    if (!response.ok) throw new Error("Failed to save project");
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error saving project:", error);
+    throw error;
+  }
+};
+
+export const loadProject = async () => {
+  try {
+    const response = await fetch("/api/project/load");
+
+    if (!response.ok) throw new Error("Failed to load project");
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error loading project:", error);
+    throw error;
+  }
+};

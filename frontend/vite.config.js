@@ -1,12 +1,13 @@
 // vite.config.js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-export default {
+export default defineConfig({
+  plugins: [react()],
   server: {
-    host: true,         // expose to github.dev
-    port: 5173,         // use 5173 (default GitHub Codespaces Vite port)
-    strictPort: true,   // if 5173 in use, fail — avoids browser mismatch
-    hmr: {
-      clientPort: 443   // hot reload over HTTPS
+    port: 5173, // Your React app runs here
+    proxy: {
+      '/api': 'http://localhost:3000' // Proxy API calls to backend
     }
   }
-};
+});
