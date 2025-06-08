@@ -1,22 +1,24 @@
 /* src/TimelineEditor.css */
 
+/* Main container */
 .timeline-editor {
   padding: 1rem;
   text-align: center;
 }
 
-.timeline-layers {
-  margin-top: 1rem;
-}
-
+/* Markers track */
 .markers-track {
   height: 20px;
   background: #111;
   position: relative;
-  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   border-radius: 4px;
+  border: 1px solid #444;
+  overflow: hidden;
 }
 
+/* Marker line */
 .marker {
   position: absolute;
   top: 0;
@@ -24,8 +26,20 @@
   width: 2px;
   background-color: #f39c12;
   opacity: 0.9;
+  transition: background-color 0.2s, opacity 0.2s;
 }
 
+.marker.active {
+  background-color: #e74c3c;
+  opacity: 1;
+}
+
+/* Layers container */
+.timeline-layers {
+  margin-top: 1rem;
+}
+
+/* Track row */
 .timeline-track {
   position: relative;
   height: 50px;
@@ -36,14 +50,17 @@
   border: 1px solid #555;
 }
 
+/* Track label */
 .track-header {
   position: absolute;
   top: -20px;
   left: 0;
   font-size: 14px;
   color: #ccc;
+  font-weight: bold;
 }
 
+/* Caption block */
 .caption-block {
   position: absolute;
   top: 5px;
@@ -55,7 +72,7 @@
   border-radius: 4px;
   cursor: grab;
   user-select: none;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, left 0.2s, width 0.2s;
 }
 
 .caption-block.active {

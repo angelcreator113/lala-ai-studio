@@ -85,7 +85,7 @@ function App() {
   return (
     <div className="App">
       <h1>
-        🎬 Lala AI Studio — Phase 30 Save + Load + Markers + Tracks 🚀
+        🎬 Lala AI Studio — Phase 31 Save + Load + Snap + Drag 🚀
       </h1>
 
       <div style={{ marginBottom: "1rem" }}>
