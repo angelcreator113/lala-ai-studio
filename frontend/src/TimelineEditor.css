@@ -1,5 +1,3 @@
-/* src/TimelineEditor.css */
-
 .timeline-editor {
   padding: 1rem;
   text-align: center;
@@ -16,8 +14,8 @@ input[type="file"] {
 }
 
 button {
-  padding: 8px 12px;
-  margin: 5px;
+  padding: 6px 10px;
+  margin: 4px;
   border: none;
   background-color: #3498db;
   color: #fff;
@@ -31,49 +29,93 @@ button:hover {
   background-color: #2980b9;
 }
 
+/* --- VIDEO WRAPPER --- */
+.timeline-video-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.timeline-video-wrapper video {
+  max-height: 80vh;
+  width: auto;
+  max-width: 100%;
+  margin: 1rem auto;
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* --- MARKERS TRACK --- */
 .markers-track {
   height: 20px;
   background: #111;
   position: relative;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin: 10px auto;
   border-radius: 4px;
+  border: 1px solid #444;
 }
 
 .marker {
   position: absolute;
   top: 0;
   height: 100%;
-  width: 2px;
+  width: 3px;
   background-color: #f39c12;
-  opacity: 0.9;
+  opacity: 0.95;
+  cursor: pointer;
 }
 
+/* --- LAYERS --- */
 .timeline-layers {
   margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
+/* --- TRACK --- */
 .timeline-track {
   position: relative;
-  height: 50px;
+  min-height: 110px;
   background: linear-gradient(to right, #222, #333);
   border-radius: 6px;
-  overflow: hidden;
-  margin-bottom: 1rem;
+  overflow: visible;
+  margin: 0 auto 1rem auto;
   border: 1px solid #555;
+  padding-top: 28px;
 }
 
+/* --- TRACK HEADER --- */
 .track-header {
   position: absolute;
-  top: -20px;
+  top: 0;
   left: 0;
+  right: 0;
+  height: 24px;
+  padding: 2px 8px;
+  background: #111;
   font-size: 14px;
   color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-bottom: 1px solid #444;
+  z-index: 2;
 }
 
+.track-header button {
+  margin-left: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+/* --- CAPTION BLOCK --- */
 .caption-block {
   position: absolute;
-  top: 5px;
+  top: 36px;
   height: 40px;
   background-color: #3498db;
   color: #fff;
@@ -83,8 +125,74 @@ button:hover {
   cursor: grab;
   user-select: none;
   transition: background-color 0.2s, left 0.2s, width 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .caption-block.active {
   background-color: #2ecc71;
+}
+
+.caption-block button {
+  position: absolute;
+  bottom: 4px;
+  right: 6px;
+  font-size: 12px;
+  padding: 2px 6px;
+  background-color: #e74c3c;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.caption-block button:hover {
+  background-color: #c0392b;
+}
+
+/* --- RESIZE HANDLE --- */
+.resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 100%;
+  background-color: #fff;
+  opacity: 0.6;
+  cursor: ew-resize;
+  border-left: 2px solid #2980b9;
+}
+
+/* --- PLAYHEAD --- */
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: red;
+  z-index: 3;
+  pointer-events: none;
+}
+.caption-block input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: #fff;
+  text-align: center;
+  outline: none;
+  font-size: 14px;
+  z-index: 4;
+  position: relative;
+}
+
+.caption-block .resize-handle {
+  z-index: 3;
+}
+
+.caption-block button {
+  z-index: 3;
+}
+.caption-block input {
+  pointer-events: auto;
 }
