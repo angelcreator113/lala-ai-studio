@@ -318,12 +318,42 @@ button:hover {
   cursor: move;
   width: 100%;
   transition: background 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .stitch-queue li:hover {
   background: #555;
 }
 
+.stitch-queue li input {
+  flex-grow: 1;
+  margin: 0 8px;
+  background: transparent;
+  color: #fff;
+  border: none;
+}
+
+.stitch-queue li input:focus {
+  outline: none;
+}
+
 .caption-hidden textarea {
   display: none;
+}
+
+.stitch-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  z-index: 9999;
 }
