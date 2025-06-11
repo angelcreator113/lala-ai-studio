@@ -4,6 +4,11 @@ import express from "express";
 import cors from "cors";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+import stitchClipsRoute from "./routes/stitchClips.js"; // ✅ Import stitch route
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = 3000;
@@ -11,30 +16,29 @@ const PORT = 3000;
 app.use(cors());
 app.use(express.json());
 
-// Project storage paths
-const PROJECT_DIR = "./backend/project-data";
+// ✅ Serve static files from /uploads (e.g. stitched videos)
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// ✅ Mount clip stitching route
+app.use("/api", stitchClipsRoute);
+
+// Paths for project saving
+const PROJECT_DIR = path.join(__dirname, "project-data");
 const PROJECT_FILE = path.join(PROJECT_DIR, "project.json");
 const VERSIONS_DIR = path.join(PROJECT_DIR, "versions");
 
-// Ensure folders exist
-if (!fs.existsSync(PROJECT_DIR)) {
-  fs.mkdirSync(PROJECT_DIR, { recursive: true });
-}
-if (!fs.existsSync(VERSIONS_DIR)) {
-  fs.mkdirSync(VERSIONS_DIR, { recursive: true });
-}
+// Ensure project and versions directory exist
+if (!fs.existsSync(PROJECT_DIR)) fs.mkdirSync(PROJECT_DIR, { recursive: true });
+if (!fs.existsSync(VERSIONS_DIR)) fs.mkdirSync(VERSIONS_DIR, { recursive: true });
 
-// ✅ Save project
+// ✅ Save project (plus versioned snapshot)
 app.post("/api/project/save", (req, res) => {
   const { projectData } = req.body;
   try {
     fs.writeFileSync(PROJECT_FILE, JSON.stringify(projectData, null, 2));
-
-    // Also save versioned backup
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const versionFile = path.join(VERSIONS_DIR, `project-${timestamp}.json`);
     fs.writeFileSync(versionFile, JSON.stringify(projectData, null, 2));
-
     res.json({ status: "ok", message: "Project saved!" });
   } catch (error) {
     console.error("Error saving project:", error);
@@ -42,7 +46,7 @@ app.post("/api/project/save", (req, res) => {
   }
 });
 
-// ✅ Load project
+// ✅ Load most recent project
 app.get("/api/project/load", (req, res) => {
   try {
     if (fs.existsSync(PROJECT_FILE)) {
@@ -57,7 +61,7 @@ app.get("/api/project/load", (req, res) => {
   }
 });
 
-// ✅ List available project versions
+// ✅ List saved versions
 app.get("/api/project/versions", (req, res) => {
   try {
     const files = fs.readdirSync(VERSIONS_DIR).filter(file => file.endsWith(".json"));
@@ -72,7 +76,7 @@ app.get("/api/project/versions", (req, res) => {
   }
 });
 
-// ✅ Load specific version
+// ✅ Load a specific version by fileName
 app.get("/api/project/version/:fileName", (req, res) => {
   const { fileName } = req.params;
   const filePath = path.join(VERSIONS_DIR, fileName);
@@ -89,10 +93,12 @@ app.get("/api/project/version/:fileName", (req, res) => {
   }
 });
 
-// Start server 🚀
-app.listen(PORT, () => {
-  console.log(`🚀 Backend running at http://localhost:${PORT}`);
-});
+// ✅ Welcome route
 app.get("/", (req, res) => {
   res.send("<h1>🎬 Lala AI Studio Backend API</h1><p>Use /api/project/... endpoints.</p>");
+});
+
+// ✅ Start server
+app.listen(PORT, () => {
+  console.log(`🚀 Backend running at http://localhost:${PORT}`);
 });

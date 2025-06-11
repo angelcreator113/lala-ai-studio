@@ -1,0 +1,122 @@
+* [33m3b369554[m[33m ([m[1;32mfeature/phase-34-clean[m[33m)[m Finalize TimelineEditor with full Phase 36 features
+[31m|[m *   [33md97d985d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #27 from angelcreator113/feature/phase-34-clean
+[31m|[m [32m|[m[31m\[m  
+[31m|[m [32m|[m[31m/[m  
+[31m|[m[31m/[m[32m|[m   
+* [32m|[m [33m505a1c4b[m[33m ([m[1;31morigin/feature/phase-34-clean[m[33m, [m[1;31morigin/feature/phase-31-snap-drag[m[33m, [m[1;32mfeature/phase-32-resize-blocks[m[33m, [m[1;32mfeature/phase-31-snap-drag[m[33m)[m ✨ Phase 31 — Snap + Drag + Markers + Tracks 🚀
+[33m|[m *   [33m2e5674e1[m Merge pull request #26 from angelcreator113/feature/phase-31-snap-drag
+[33m|[m [34m|[m[33m\[m  
+[33m|[m [34m|[m[33m/[m  
+[33m|[m[33m/[m[34m|[m   
+* [34m|[m [33m605178f8[m ✨ Phase 31 — Add Snap + Drag + Markers UX 🚀
+[35m|[m *   [33m6c5c309e[m Merge pull request #25 from angelcreator113/feature/phase-30-final
+[35m|[m [36m|[m[35m\[m  
+[35m|[m [36m|[m[35m/[m  
+[35m|[m[35m/[m[36m|[m   
+* [36m|[m [33m6bc5b66c[m[33m ([m[1;31morigin/feature/phase-30-final[m[33m, [m[1;32mfeature/phase-30-final[m[33m)[m ✨ Phase 30 — Finalize Project Save + Load + Markers + Tracks + Styles 🚀
+[1;31m|[m *   [33mc748ca94[m Merge pull request #24 from angelcreator113/feature/phase-28-track-layers
+[1;31m|[m [1;32m|[m[1;31m\[m  
+[1;31m|[m [1;32m|[m[1;31m/[m  
+[1;31m|[m[1;31m/[m[1;32m|[m   
+* [1;32m|[m [33m1783957a[m[33m ([m[1;31morigin/feature/phase-28-track-layers[m[33m, [m[1;32mfeature/phase-28-track-layers[m[33m)[m feat: Phase 28 — Add Track Layers System 🚀✨
+[1;32m|[m[1;32m/[m  
+*   [33mefbd0063[m[33m ([m[1;32mfeature/phase-27-timeline-snap-drag[m[33m)[m Merge pull request #23 from angelcreator113/feature/phase-27-timeline-snap-drag
+[1;34m|[m[1;35m\[m  
+[1;34m|[m * [33me1d9a58d[m feat: Phase 27 — Timeline Snap + Caption Drag 🚀✨
+[1;34m|[m[1;34m/[m  
+*   [33mb3f8d323[m[33m ([m[1;31morigin/feature/phase-27-timeline-polish-snap[m[33m, [m[1;32mfeature/phase-27-timeline-polish-snap[m[33m, [m[1;32mfeature/phase-26-project-versions[m[33m)[m Merge pull request #22 from angelcreator113/feature/phase-26-project-versions
+[1;36m|[m[31m\[m  
+[1;36m|[m * [33m2295c7d2[m[33m ([m[1;31morigin/feature/phase-26-project-versions[m[33m)[m feat: Phase 26 — Project Versions Save + Load 🚀✨
+[1;36m|[m[1;36m/[m  
+*   [33me7086bc1[m[33m ([m[1;32mfeature/phase-25-project-polish[m[33m)[m Merge pull request #21 from angelcreator113/feature/phase-25-project-polish
+[32m|[m[33m\[m  
+[32m|[m * [33m083cd467[m[33m ([m[1;31morigin/feature/phase-25-project-polish[m[33m)[m 🚀 Phase 25 Full Save + Load working 🎬
+[32m|[m[32m/[m  
+*   [33m3c6e0787[m Merge pull request #20 from angelcreator113/feature/phase-24-timeline-drag
+[34m|[m[35m\[m  
+[34m|[m * [33m21357b4d[m feat: Phase 24 — Caption Sync + Draggable Timeline 🚀✨
+[34m|[m[34m/[m  
+*   [33mae479603[m Merge pull request #19 from angelcreator113/feature/phase-23-caption-drag
+[36m|[m[1;31m\[m  
+[36m|[m * [33me7124415[m[33m ([m[1;31morigin/feature/phase-23-caption-drag[m[33m, [m[1;32mfeature/phase-23-caption-drag[m[33m)[m feat: Phase 23 — Caption Sync + Drag Markers 🚀✨
+* [1;31m|[m [33m54cda7e2[m Merge pull request #18 from angelcreator113/feature/phase-22-timeline-playback
+[1;32m|[m[1;31m\[m[1;31m|[m 
+[1;32m|[m * [33m98e98e30[m[33m ([m[1;31morigin/feature/phase-22-timeline-playback[m[33m, [m[1;32mfeature/phase-22-timeline-playback[m[33m)[m feat: Phase 22 — Timeline Playback Controls + Preview Polishing 🚀✨
+[1;32m|[m[1;32m/[m  
+*   [33m0eb13c44[m[33m ([m[1;32mfeature/phase-22-timeline-preview-controls[m[33m, [m[1;32mfeature/phase-21-timeline-preview[m[33m)[m Merge pull request #17 from angelcreator113/feature/phase-21-timeline-preview
+[1;34m|[m[1;35m\[m  
+[1;34m|[m * [33m683b659e[m[33m ([m[1;31morigin/feature/phase-21-timeline-preview[m[33m)[m feat: Phase 21 — Timeline Ordering + Live Preview 🚀✨
+* [1;35m|[m [33md2943ac5[m Merge pull request #16 from angelcreator113/feature/phase-21-timeline-preview
+[1;36m|[m[1;35m\[m[1;35m|[m 
+[1;36m|[m * [33m33ca287f[m feat: Phase 21 — Timeline Ordering + Live Preview 🚀✨
+* [31m|[m [33m6c7f850f[m Merge pull request #14 from angelcreator113/feature/phase-20-timeline-edit
+[32m|[m[31m\[m[31m|[m 
+* [31m|[m   [33ma26d4f3f[m Merge pull request #13 from angelcreator113/feature/phase-19-timeline-polish
+[34m|[m[35m\[m [31m\[m  
+* [35m\[m [31m\[m   [33m954d1d97[m Merge pull request #12 from angelcreator113/feature/phase-17-timeline-ai
+[36m|[m[1;31m\[m [35m\[m [31m\[m  
+* [1;31m\[m [35m\[m [31m\[m   [33m6c5a4300[m Merge pull request #11 from angelcreator113/feature/phase-17-timeline-ai
+[1;32m|[m[1;33m\[m [1;31m\[m [35m\[m [31m\[m  
+* [1;33m\[m [1;31m\[m [35m\[m [31m\[m   [33m8e127fbf[m Merge pull request #10 from angelcreator113/feature/phase-16-ai-captions
+[1;34m|[m[1;35m\[m [1;33m\[m [1;31m\[m [35m\[m [31m\[m  
+* [1;35m\[m [1;33m\[m [1;31m\[m [35m\[m [31m\[m   [33m310d5305[m Merge pull request #9 from angelcreator113/feature/phase-15-ai-assistants
+[1;36m|[m[31m\[m [1;35m\[m [1;33m\[m [1;31m\[m [35m\[m [31m\[m  
+[1;36m|[m [31m|[m [1;35m|[m [1;33m|[m [1;31m|[m [35m|[m [31m|[m * [33m0752209a[m[33m ([m[1;31morigin/feature/phase-19-timeline-polish[m[33m)[m Merge pull request #15 from angelcreator113/feature/phase-20-timeline-edit
+[1;36m|[m [31m|[m [1;35m|[m [1;33m|[m [1;31m|[m [35m|[m [31m|[m[35m/[m[31m|[m 
+[1;36m|[m [31m|[m [1;35m|[m [1;33m|[m [1;31m|[m [35m|[m[35m/[m[31m|[m[31m/[m  
+[1;36m|[m [31m|[m [1;35m|[m [1;33m|[m [1;31m|[m [35m|[m * [33mff02fa81[m[33m ([m[1;31morigin/feature/phase-20-timeline-edit[m[33m, [m[1;32mfeature/phase-20-timeline-edit[m[33m)[m feat: Phase 20 — Editable Timeline + Save Project 🚀✨
+[1;36m|[m [31m|[m [1;35m|[m [1;33m|[m [1;31m|[m [35m|[m[35m/[m  
+[1;36m|[m [31m|[m [1;35m|[m [1;33m|[m [1;31m|[m * [33m20b1536b[m[33m ([m[1;32mfeature/phase-19-timeline-polish[m[33m)[m feat: Phase 19 — Polished timeline preview + responsive video 🚀✨
+[1;36m|[m [31m|[m [1;35m|[m [1;33m|[m [1;31m|[m[1;31m/[m  
+[1;36m|[m [31m|[m [1;35m|[m [1;33m|[m * [33m97e8565a[m[33m ([m[1;31morigin/feature/phase-17-timeline-ai[m[33m, [m[1;32mfeature/phase-17-timeline-ai[m[33m)[m feat: Phase 18 Polished TimelineEditor + Save + Export buttons 🚀✨
+[1;36m|[m [31m|[m [1;35m|[m [1;33m|[m[1;33m/[m  
+[1;36m|[m [31m|[m [1;35m|[m * [33m47d371a3[m feat: Phase 17 — Timeline AI Captions Full Pack 🚀
+[1;36m|[m [31m|[m [1;35m|[m * [33m5bf823b0[m feat: Phase 17 — Timeline AI Editing + Import + Undo 🚀✨
+[1;36m|[m [31m|[m [1;35m|[m[1;35m/[m  
+[1;36m|[m [31m|[m * [33m6fe3ab79[m[33m ([m[1;31morigin/feature/phase-16-ai-captions[m[33m, [m[1;32mfeature/phase-16-ai-captions[m[33m, [m[1;32mfeature/phase-15-ai-assistants[m[33m)[m feat: Phase 16 — AI Captions + Save + Export 🚀✨
+[1;36m|[m [31m|[m[31m/[m  
+[1;36m|[m * [33mfa7d8eee[m[33m ([m[1;31morigin/feature/phase-15-ai-assistants[m[33m)[m feat: add AI Assistants panel + Auto Caption Agents 🚀🤖
+[1;36m|[m[1;36m/[m  
+*   [33me8b917a7[m[33m ([m[1;32mfeature/phase-14-timeline-polish[m[33m)[m Merge pull request #8 from angelcreator113/feature/phase-14-timeline-polish
+[34m|[m[35m\[m  
+[34m|[m * [33me11da4df[m[33m ([m[1;31morigin/feature/phase-14-timeline-polish[m[33m)[m feat: Phase 14 — Timeline polish + UX styling + caption refine/export 🚀✨
+* [35m|[m [33m6da5a1d2[m Merge pull request #7 from angelcreator113/feature/ai-caption-effects
+[36m|[m[35m\[m[35m|[m 
+[36m|[m * [33m6e06d9a5[m[33m ([m[1;31morigin/feature/ai-caption-effects[m[33m, [m[1;32mfeature/ai-caption-effects[m[33m)[m feat: add AI Refine Captions + UX polish 🚀✨
+* [1;31m|[m [33m45dabe2c[m Merge pull request #6 from angelcreator113/feature/ai-caption-effects
+[1;32m|[m[1;31m\[m[1;31m|[m 
+[1;32m|[m * [33m34d4e756[m feat: add AI caption effects + timeline polish 🚀
+* [1;33m|[m [33me749de8f[m Merge pull request #5 from angelcreator113/feature/ai-caption-effects
+[1;34m|[m[1;33m\[m[1;33m|[m 
+[1;34m|[m * [33md7e144b3[m feat: add AI caption effects + timeline polish 🚀
+* [1;35m|[m [33m9dfc115b[m Merge pull request #4 from angelcreator113/feature/ai-caption-effects
+[1;36m|[m[1;35m\[m[1;35m|[m 
+[1;36m|[m * [33mc8aad08e[m feat: Phase 10 — AI captions save/load/export + timeline editor 🚀
+[1;36m|[m * [33me0d9d253[m chore: add .gitkeep to track exports folder 🚀
+* [31m|[m [33m66c45205[m Merge pull request #3 from angelcreator113/feature/timeline-captions
+[32m|[m[31m\[m[31m|[m 
+[32m|[m * [33m7cbe46e2[m[33m ([m[1;31morigin/feature/timeline-captions[m[33m, [m[1;32mfeature/timeline-captions[m[33m, [m[1;32mfeature/ai-edit-export[m[33m)[m feat: draggable/resizable timeline bars + edit popup + AI suggest 🚀
+[32m|[m * [33m1cb1a9f2[m feat: add live captions sync on video player 🚀
+[32m|[m * [33mbbf69869[m feat: AI Edit/Delete captions + regenerate captions API 🚀
+[32m|[m * [33mc8b41ce1[m feat: update TimelineEditor with Save/Load + connect in App.jsx 🚀
+[32m|[m * [33m05a13d9d[m feat: add AI captions generate route + frontend button 🚀
+[32m|[m * [33m6ad1c300[m feat: add timeline editor MVP + upload captions API 🚀
+[32m|[m[32m/[m  
+*   [33m6dc9713d[m Merge pull request #2 from angelcreator113/feature/video-upload
+[34m|[m[35m\[m  
+[34m|[m * [33mf685a2e8[m[33m ([m[1;31morigin/feature/video-upload[m[33m, [m[1;32mfeature/video-upload[m[33m)[m feat: add video upload MVP 🚀
+[34m|[m[34m/[m  
+*   [33m17842de9[m[33m ([m[1;32mfeature/next-feature-name[m[33m)[m Merge pull request #1 from angelcreator113/feature/connector-clean
+[36m|[m[1;31m\[m  
+[36m|[m * [33m6a6d1d87[m[33m ([m[1;31morigin/feature/connector-clean[m[33m, [m[1;32mfeature/connector-clean[m[33m)[m feat: add frontend-backend connector with echo test 🚀
+[36m|[m[36m/[m  
+[36m|[m * [33mc8bbe8f6[m[33m ([m[1;31morigin/feature/connector[m[33m, [m[1;32mfeature/connector[m[33m)[m fix: remove node_modules and .vite from git tracking 🚀
+[36m|[m * [33m8e0c6010[m fix: remove node_modules and .vite from git tracking 🚀
+[36m|[m * [33m5187ffa7[m feat: add frontend-backend connector with echo test 🚀
+[36m|[m[36m/[m  
+* [33mf26caef4[m feat: add frontend-backend connector with echo test 🚀
+* [33mdb9d6adf[m Phase 6 complete: backend API routes + nodemon + /api/health live 🚀✅
+* [33macb8fee9[m Phase 6: verified backend + frontend sync and stability 🚀✅
+* [33m9b6b7818[m Phase 4 clean: backend + frontend modular setup 🚀✨
+* [33m8bdc9e9a[m Phase 3: frontend + backend setup complete 🚀✨
+* [33m95a7323b[m Initial clean commit after filter-repo 🚀
