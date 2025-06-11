@@ -3,7 +3,7 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import './TimelineEditor.css';
 
-function DraggableClip({ clip, index, moveClip }) {
+function DraggableClip({ clip, index, moveClip, removeClip, renameClip }) {
   const ref = useRef(null);
   const [, drop] = useDrop({
     accept: 'clip',
@@ -18,7 +18,16 @@ function DraggableClip({ clip, index, moveClip }) {
     item: { index },
   });
   drag(drop(ref));
-  return <li ref={ref}>{index + 1}. {clip.name}</li>;
+  return (
+    <li ref={ref}>
+      <span>{index + 1}.</span>
+      <input
+        value={clip.name}
+        onChange={e => renameClip(index, e.target.value)}
+      />
+      <button onClick={() => removeClip(index)}>×</button>
+    </li>
+  );
 }
 
 const CLIP_TEMPLATES = [
@@ -41,6 +50,7 @@ export default function TimelineEditor() {
   const [currentTime, setCurrentTime] = useState(0);
   const [videoName, setVideoName] = useState('');
   const [stitchClips, setStitchClips] = useState([]);
+  const [isStitching, setIsStitching] = useState(false);
   const [hoverTime, setHoverTime] = useState(null);
   const [isDraggingPlayhead, setIsDraggingPlayhead] = useState(false);
   const [hideCaptions, setHideCaptions] = useState(false);
@@ -75,11 +85,22 @@ export default function TimelineEditor() {
     setStitchClips(prev => [...prev, newClip]);
   };
 
+  const removeClip = (index) => {
+    setStitchClips(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const renameClip = (index, name) => {
+    setStitchClips(prev =>
+      prev.map((clip, i) => (i === index ? { ...clip, name } : clip))
+    );
+  };
+
   const handleStitchClips = async () => {
     const formData = new FormData();
     stitchClips.forEach(clip => formData.append('clips', clip.file));
 
     try {
+      setIsStitching(true);
       const response = await fetch('http://localhost:3000/api/stitch', {
         method: 'POST',
         body: formData
@@ -92,9 +113,12 @@ export default function TimelineEditor() {
         setTracks([]);
         setCurrentTime(0);
         setVideoName("stitched_output.mp4");
+        setStitchClips([]);
       }
     } catch (error) {
       console.error('Stitching failed', error);
+    } finally {
+      setIsStitching(false);
     }
   };
 
@@ -271,15 +295,23 @@ export default function TimelineEditor() {
               <h4>📚 Stitch Queue</h4>
               <ul>
                 {stitchClips.map((clip, index) => (
-                  <DraggableClip key={clip.id} clip={clip} index={index} moveClip={(from, to) => {
-                    const updated = [...stitchClips];
-                    const [moved] = updated.splice(from, 1);
-                    updated.splice(to, 0, moved);
-                    setStitchClips(updated);
-                  }} />
+                  <DraggableClip
+                    key={clip.id}
+                    clip={clip}
+                    index={index}
+                    moveClip={(from, to) => {
+                      const updated = [...stitchClips];
+                      const [moved] = updated.splice(from, 1);
+                      updated.splice(to, 0, moved);
+                      setStitchClips(updated);
+                    }}
+                    removeClip={removeClip}
+                    renameClip={renameClip}
+                  />
                 ))}
               </ul>
-              <button onClick={handleStitchClips}>🔗 Merge Clips</button>
+              <button onClick={handleStitchClips} disabled={isStitching}>🔗 Merge Clips</button>
+              <button onClick={() => setStitchClips([])} disabled={isStitching}>🧹 Clear Queue</button>
               <div style={{ marginTop: '10px' }}>
                 {CLIP_TEMPLATES.map(template => (
                   <button key={template.name} onClick={() => handleTemplateInsert(template)}>📌 Add {template.name}</button>
@@ -382,6 +414,9 @@ export default function TimelineEditor() {
             className="main-video"
           />
         </div>
+        {isStitching && (
+          <div className="stitch-overlay">Merging clips...</div>
+        )}
       </div>
     </DndProvider>
   );
