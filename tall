@@ -1,0 +1,27 @@
+  feature/ai-caption-effects                [m 6e06d9a5 feat: add AI Refine Captions + UX polish 🚀✨
+  feature/ai-edit-export                    [m 7cbe46e2 feat: draggable/resizable timeline bars + edit popup + AI suggest 🚀
+  feature/connector                         [m c8bbe8f6 [[34morigin/feature/connector[m] fix: remove node_modules and .vite from git tracking 🚀
+  feature/connector-clean                   [m 6a6d1d87 [[34morigin/feature/connector-clean[m] feat: add frontend-backend connector with echo test 🚀
+  feature/next-feature-name                 [m 17842de9 Merge pull request #1 from angelcreator113/feature/connector-clean
+  feature/phase-14-timeline-polish          [m e8b917a7 Merge pull request #8 from angelcreator113/feature/phase-14-timeline-polish
+  feature/phase-15-ai-assistants            [m 6fe3ab79 feat: Phase 16 — AI Captions + Save + Export 🚀✨
+  feature/phase-16-ai-captions              [m 6fe3ab79 feat: Phase 16 — AI Captions + Save + Export 🚀✨
+  feature/phase-17-timeline-ai              [m 97e8565a feat: Phase 18 Polished TimelineEditor + Save + Export buttons 🚀✨
+  feature/phase-19-timeline-polish          [m 20b1536b feat: Phase 19 — Polished timeline preview + responsive video 🚀✨
+  feature/phase-20-timeline-edit            [m ff02fa81 feat: Phase 20 — Editable Timeline + Save Project 🚀✨
+  feature/phase-21-timeline-preview         [m 0eb13c44 Merge pull request #17 from angelcreator113/feature/phase-21-timeline-preview
+  feature/phase-22-timeline-playback        [m 98e98e30 feat: Phase 22 — Timeline Playback Controls + Preview Polishing 🚀✨
+  feature/phase-22-timeline-preview-controls[m 0eb13c44 Merge pull request #17 from angelcreator113/feature/phase-21-timeline-preview
+  feature/phase-23-caption-drag             [m e7124415 feat: Phase 23 — Caption Sync + Drag Markers 🚀✨
+  feature/phase-25-project-polish           [m e7086bc1 Merge pull request #21 from angelcreator113/feature/phase-25-project-polish
+  feature/phase-26-project-versions         [m b3f8d323 Merge pull request #22 from angelcreator113/feature/phase-26-project-versions
+  feature/phase-27-timeline-polish-snap     [m b3f8d323 Merge pull request #22 from angelcreator113/feature/phase-26-project-versions
+  feature/phase-27-timeline-snap-drag       [m efbd0063 Merge pull request #23 from angelcreator113/feature/phase-27-timeline-snap-drag
+  feature/phase-28-track-layers             [m 1783957a feat: Phase 28 — Add Track Layers System 🚀✨
+  feature/phase-30-final                    [m 6bc5b66c ✨ Phase 30 — Finalize Project Save + Load + Markers + Tracks + Styles 🚀
+  feature/phase-31-snap-drag                [m 505a1c4b ✨ Phase 31 — Snap + Drag + Markers + Tracks 🚀
+  feature/phase-32-resize-blocks            [m 505a1c4b ✨ Phase 31 — Snap + Drag + Markers + Tracks 🚀
+* [32mfeature/phase-34-clean                    [m 505a1c4b [[34morigin/feature/phase-34-clean[m] ✨ Phase 31 — Snap + Drag + Markers + Tracks 🚀
+  feature/timeline-captions                 [m 7cbe46e2 feat: draggable/resizable timeline bars + edit popup + AI suggest 🚀
+  feature/video-upload                      [m f685a2e8 [[34morigin/feature/video-upload[m] feat: add video upload MVP 🚀
+  main                                      [m 3c6e0787 [[34morigin/main[m: behind 12] Merge pull request #20 from angelcreator113/feature/phase-24-timeline-drag
